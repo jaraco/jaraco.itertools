@@ -1,4 +1,4 @@
-import operator
+import operator, itertools
 
 class Count( object ):
 	"""
@@ -68,3 +68,41 @@ class LessThanNConsecutiveBlanks( object ):
 		if self.count > self.limit:
 			raise ValueError, "Should not call this object anymore."
 		return self.count < self.limit
+
+class splitter( object ):
+	"""object that will split a string with the given arguments for each call
+	>>> s = splitter( ',' )
+	>>> list( s( 'hello, world, this is your, master calling' ) )
+	['hello', ' world', ' this is your', ' master calling']
+"""
+	def __init__( self, sep = None ):
+		self.sep = sep
+
+	def __call__( self, s ):
+		lastIndex = 0
+		while True:
+			nextIndex = s.find( self.sep, lastIndex )
+			if nextIndex != -1:
+				yield s[ lastIndex:nextIndex ]
+				lastIndex = nextIndex + 1
+			else:
+				yield s[ lastIndex: ]
+				break
+
+def chunkGenerator( seq, size ):
+	"""returns sequence or iterable seq in chunks of size
+	>>> c = chunkGenerator( xrange( 11 ), 3 )
+	>>> tuple( c )
+	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10))
+	>>> c = chunkGenerator( range( 10 ), 3 )
+	>>> tuple( c )
+	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9,))
+	"""
+	if isinstance( seq, basestring ):
+		raise TypeError, 'Cannot use itools.chunkGenerator on strings.  Use tools.chunkGenerator instead'
+	# make sure sequence is iterable
+	seq = iter( seq )
+	while 1:
+		result = tuple( itertools.islice( seq, size ) )
+		if not result: break
+		yield result
