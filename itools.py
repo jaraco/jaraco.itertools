@@ -7,9 +7,9 @@ Copyright © 2004 Sandia National Laboratories
 """
 
 __author__ = 'Jason R. Coombs <jaraco@sandia.gov>'
-__version__ = '$Revision: 7 $a'[11:-2]
+__version__ = '$Revision: 8 $a'[11:-2]
 __vssauthor__ = '$Author: Jaraco $'[9:-2]
-__date__ = '$Modtime: 1-10-04 11:30 $'[10:-2]
+__date__ = '$Modtime: 9-12-04 12:51 $'[10:-2]
 
 import operator, itertools
 from tools import ordinalth
@@ -197,3 +197,17 @@ def evalN( i, n ):
 	"Cause an iterable to evaluate n of its arguments, but don't store any result."
 	for x in itertools.islice( i, n ): pass
 	
+class Counter( object ):
+	def __init__( self, i ):
+		self.__count__ = 0
+		self.__i__ = enumerate( i )
+
+	def __iter__( self ): return self
+
+	def next( self ):
+		index, result = self.__i__.next()
+		self.__count__ = index + 1
+		return result
+
+	def GetCount( self ):
+		return self.__count__
