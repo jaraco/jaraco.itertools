@@ -162,3 +162,11 @@ def adjacentPairs( i ):
 		next = i.next()
 		yield ( last, next )
 		last = next
+
+def chain( sequences ):
+	"""functions like itertools.chain, except chains everything in sequences.
+	Equivalent to itertools.chain( *sequences ) except sequences is evaluated
+	on demand."""
+	for sequence in sequences:
+		for item in sequence:
+			yield item
