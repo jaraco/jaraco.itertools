@@ -7,9 +7,9 @@ Copyright © 2004 Sandia National Laboratories
 """
 
 __author__ = 'Jason R. Coombs <jaraco@sandia.gov>'
-__version__ = '$Revision: 6 $a'[11:-2]
+__version__ = '$Revision: 7 $a'[11:-2]
 __vssauthor__ = '$Author: Jaraco $'[9:-2]
-__date__ = '$Modtime: 04-06-23 12:24 $'[10:-2]
+__date__ = '$Modtime: 1-10-04 11:30 $'[10:-2]
 
 import operator, itertools
 from tools import ordinalth
@@ -183,3 +183,17 @@ def chain( sequences ):
 	for sequence in sequences:
 		for item in sequence:
 			yield item
+
+def infiniteCall( f, *args ):
+	"Perpetually yield the result of calling function f."
+	while True:
+		yield f( *args )
+
+def evalAll( i ):
+	"Cause an iterable to evaluate all of its arguments, but don't store any result."
+	for x in i: pass
+
+def evalN( i, n ):
+	"Cause an iterable to evaluate n of its arguments, but don't store any result."
+	for x in itertools.islice( i, n ): pass
+	
