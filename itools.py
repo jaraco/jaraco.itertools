@@ -151,3 +151,14 @@ def chunkGenerator( seq, size ):
 		result = tuple( itertools.islice( seq, size ) )
 		if not result: break
 		yield result
+
+def adjacentPairs( i ):
+	"""Yield adjacent pairs of a single iterable as pairs
+	>>> tuple( adjacentPairs( iter( xrange( 5 ) ) )
+	((0, 1), (1, 2), (2, 3), (3, 4))
+	"""
+	last = i.next()
+	while True:
+		next = i.next()
+		yield ( last, next )
+		last = next
