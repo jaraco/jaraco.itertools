@@ -8,8 +8,8 @@ Copyright © 2004 Sandia National Laboratories
 
 __author__ = 'Jason R. Coombs <jaraco@sandia.gov>'
 __version__ = '$Revision: 8 $a'[11:-2]
-__vssauthor__ = '$Author: Jaraco $'[9:-2]
-__date__ = '$Modtime: 9-12-04 12:51 $'[10:-2]
+__svnauthor__ = '$Author: Jaraco $'[9:-2]
+__date__ = '$Date: 9-12-04 12:51 $'[7:-2]
 
 import operator, itertools
 from tools import ordinalth
