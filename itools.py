@@ -1,20 +1,65 @@
 import operator, itertools
+from tools import ordinalth
 
 class Count( object ):
 	"""
 	A stop object that will count how many times it's been called and return
-	False on the Nth call.
+	False on the N+1st call.  Useful for use with takewhile.
+	>>> tuple( itertools.takewhile( Count( 5 ), xrange( 20 ) ) )
+	(0, 1, 2, 3, 4)
 	"""
 	def __init__( self, limit ):
 		self.count = 0
 		self.limit = limit
 		
 	def __call__( self, arg ):
+		if not self.limit:
+			result = True
+		else:
+			if self.count > self.limit:
+				raise ValueError, "Should not call count stop more anymore."
+			result = self.count < self.limit
 		self.count += 1
-		if self.count > self.limit:
-			raise ValueError, "Should not call count stop more anymore."
-		return self.count < self.limit
+		return result
 
+	def __str__( self ):
+		if limit:
+			return 'at most %d' % limit
+		else:
+			return 'all'
+
+class islice( object ):
+	"""May be applied to an iterable to limit the number of items returned.
+	Works similarly to count, except is called only once on an iterable.
+	Functionality is identical to islice, except for __str__ and reusability.
+	>>> tuple( islice( 5 ).apply( xrange( 20 ) ) )
+	(0, 1, 2, 3, 4)
+	>>> tuple( islice( None ).apply( xrange( 20 ) ) )
+	(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
+	"""
+	def __init__( self, *sliceArgs ):
+		self.sliceArgs = sliceArgs
+
+	def apply( self, i ):
+		return itertools.islice( i, *self.sliceArgs )
+
+	def __str__( self ):
+		if self.sliceArgs == ( None, ):
+			result = 'all'
+		else:
+			result = self._formatArgs()
+		return result
+
+	def _formatArgs( self ):
+		baseOneRange = lambda (a,b): '%d to %d' % (a+1,b)
+		if len( self.sliceArgs ) == 1:
+			result = 'at most %d' % self.sliceArgs
+		if len( self.sliceArgs ) == 2:
+			result = 'items %s' % baseOneRange( self.sliceArgs )
+		if len( self.sliceArgs ) == 3:
+			result = 'every %s item from %s' % ( ordinalth( self.sliceArgs[2] ), baseOneRange( self.sliceArgs[0:2] ) )
+		return result
+	
 class LessThanNBlanks( object ):
 	"""
 	An object that when called will return True until n false elements
