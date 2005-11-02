@@ -211,3 +211,29 @@ class Counter( object ):
 
 	def GetCount( self ):
 		return self.__count__
+
+def flatten( nested_iter, ignore_types = ( basestring, ) ):
+	"""flatten an iterable with possible nested iterables.
+	Taken from the recipes in the itertools documentation,
+	but improved to support multiple level lists and to maximize on-demand
+	processing efficiency
+	>>> flatten( ['a','b',['c','d',['e','f'],'g'],'h'] ) == ['a','b','c','d','e','f','g','h']
+	True
+
+	Note this will normally ignore string types as iterables.  Any set of
+	iterables can be ignored by passing the set as ignore_types.
+	>>> flatten( ['ab', 'c'] )
+	['ab', 'c']
+	>>> flatten( ['ab', 'c'], () )
+	['a', 'b', 'c']
+	"""
+	return list( flatten_iter( nested_iter ) )
+
+def flatten_iter( nested_iter, ignore_types = ( basestring, ) ):
+	if isinstance( nested_iter, ignore_types ):
+		return ( nested_iter, )
+	try:
+		return chain( itertools.imap( flatten_iter, nested_iter ) )
+	except TypeError:
+		# can't iterate
+		return nested_iter
