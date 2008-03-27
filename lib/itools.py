@@ -82,10 +82,10 @@ class LessThanNBlanks( object ):
 
 >>> import itertools
 >>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5' ]
->>> first = itertools.takewhile( itools.LessThanNBlanks( 2 ), sampleData )
+>>> first = itertools.takewhile( LessThanNBlanks( 2 ), sampleData )
 >>> tuple( first )
 ('string 1', 'string 2', '', 'string 3')
->>> first = itertools.takewhile( itools.LessThanNBlanks( 3 ), sampleData )
+>>> first = itertools.takewhile( LessThanNBlanks( 3 ), sampleData )
 >>> tuple( first )
 ('string 1', 'string 2', '', 'string 3', '', 'string 4')
 	"""
@@ -108,7 +108,7 @@ class LessThanNConsecutiveBlanks( object ):
 
 >>> import itertools
 >>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5' ]
->>> first = itertools.takewhile( itools.LessThanNConsecutiveBlanks( 2 ), sampleData )
+>>> first = itertools.takewhile( LessThanNConsecutiveBlanks( 2 ), sampleData )
 >>> tuple( first )
 ('string 1', 'string 2', '', 'string 3', '', 'string 4', '')
 	"""
@@ -157,7 +157,7 @@ def chunkGenerator( seq, size ):
 	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9,))
 	"""
 	if isinstance( seq, basestring ):
-		raise TypeError, 'Cannot use itools.chunkGenerator on strings.  Use tools.chunkGenerator instead'
+		raise TypeError, 'Cannot use chunkGenerator on strings.  Use tools.chunkGenerator instead'
 	# make sure sequence is iterable
 	seq = iter( seq )
 	while 1:
@@ -167,7 +167,7 @@ def chunkGenerator( seq, size ):
 
 def adjacentPairs( i ):
 	"""Yield adjacent pairs of a single iterable as pairs
-	>>> tuple( adjacentPairs( iter( xrange( 5 ) ) )
+	>>> tuple( adjacentPairs( iter( xrange( 5 ) ) ))
 	((0, 1), (1, 2), (2, 3), (3, 4))
 	"""
 	last = i.next()
@@ -212,28 +212,48 @@ class Counter( object ):
 	def GetCount( self ):
 		return self.__count__
 
-def flatten( nested_iter, ignore_types = ( basestring, ) ):
+# todo, factor out caching capability
+class iterable_test(dict):
+	def __init__(self, ignore_classes=(basestring,)):
+		self.ignore_classes = ignore_classes
+
+	def __getitem__(self, candidate):
+		return dict.get(self, type(candidate)) or self._test(candidate)
+			
+	def _test(self, candidate):
+		try:
+			if isinstance(candidate, self.ignore_classes):
+				raise TypeError
+			iter(candidate)
+			result = True
+		except TypeError:
+			result = False
+		self[type(candidate)] = result
+		return result
+
+def iflatten(subject, iterable_test=None):
+	if iterable_test is None:
+		iterable_test = iterable_test()
+	if not iterable_test[subject]:
+		yield subject
+	else:
+		for elem in subject:
+			for subelem in iflatten(elem, iterable_test):
+				yield subelem
+				
+def flatten(subject, iterable_test=None):
 	"""flatten an iterable with possible nested iterables.
-	Taken from the recipes in the itertools documentation,
-	but improved to support multiple level lists and to maximize on-demand
-	processing efficiency
+	Adapted from
+	http://mail.python.org/pipermail/python-list/2003-November/233971.html
 	>>> flatten( ['a','b',['c','d',['e','f'],'g'],'h'] ) == ['a','b','c','d','e','f','g','h']
 	True
 
 	Note this will normally ignore string types as iterables.  Any set of
-	iterables can be ignored by passing the set as ignore_types.
+	iterables can be ignored by passing the set as ignore_classes.
 	>>> flatten( ['ab', 'c'] )
 	['ab', 'c']
-	>>> flatten( ['ab', 'c'], () )
+	>>> flatten( ['ab', 'c'], iterable_test(ignore_classes=()) )
 	['a', 'b', 'c']
 	"""
-	return list( flatten_iter( nested_iter ) )
+	return list(iflatten(subject, iterable_test))
 
-def flatten_iter( nested_iter, ignore_types = ( basestring, ) ):
-	if isinstance( nested_iter, ignore_types ):
-		return ( nested_iter, )
-	try:
-		return chain( itertools.imap( flatten_iter, nested_iter ) )
-	except TypeError:
-		# can't iterate
-		return nested_iter
