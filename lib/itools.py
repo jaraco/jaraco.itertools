@@ -7,7 +7,7 @@ Copyright © 2004 Sandia National Laboratories
 """
 
 __author__ = 'Jason R. Coombs <jaraco@sandia.gov>'
-__version__ = '$Revision$a'[11:-2]
+__version__ = '$Revision$'[11:-2]
 __svnauthor__ = '$Author$'[9:-2]
 __date__ = '$Date$'[7:-2]
 
@@ -231,29 +231,26 @@ class iterable_test(dict):
 		self[type(candidate)] = result
 		return result
 
-def iflatten(subject, iterable_test=None):
-	if iterable_test is None:
-		iterable_test = iterable_test()
-	if not iterable_test[subject]:
+def iflatten(subject, test=None):
+	if test is None:
+		test = iterable_test()
+	if not test[subject]:
 		yield subject
 	else:
 		for elem in subject:
-			for subelem in iflatten(elem, iterable_test):
+			for subelem in iflatten(elem, test):
 				yield subelem
 				
-def flatten(subject, iterable_test=None):
+def flatten(subject, test=None):
 	"""flatten an iterable with possible nested iterables.
 	Adapted from
 	http://mail.python.org/pipermail/python-list/2003-November/233971.html
 	>>> flatten( ['a','b',['c','d',['e','f'],'g'],'h'] ) == ['a','b','c','d','e','f','g','h']
 	True
 
-	Note this will normally ignore string types as iterables.  Any set of
-	iterables can be ignored by passing the set as ignore_classes.
+	Note this will normally ignore string types as iterables.
 	>>> flatten( ['ab', 'c'] )
 	['ab', 'c']
-	>>> flatten( ['ab', 'c'], iterable_test(ignore_classes=()) )
-	['a', 'b', 'c']
 	"""
-	return list(iflatten(subject, iterable_test))
+	return list(iflatten(subject, test))
 
