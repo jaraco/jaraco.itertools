@@ -214,7 +214,12 @@ class Counter( object ):
 
 # todo, factor out caching capability
 class iterable_test(dict):
+	"Test objects for iterability, caching the result by type"
 	def __init__(self, ignore_classes=(basestring,)):
+		"""ignore_classes must include basestring, because if a string
+		is iterable, so is a single character, and the routine runs
+		into an infinite recursion"""
+		assert basestring in ignore_classes, 'basestring must be in ignore_classes'
 		self.ignore_classes = ignore_classes
 
 	def __getitem__(self, candidate):
