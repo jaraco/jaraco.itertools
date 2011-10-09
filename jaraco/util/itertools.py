@@ -61,31 +61,31 @@ def bisect(seq, func = bool):
 	func(element).
 	By default, func = bool, so uses the truth value of the object.
 	"""
-	queues = groupby_saved(seq, func)
-	return queues.getFirstNQueues(2)
+	queues = GroupbySaved(seq, func)
+	return queues.get_first_n_queues(2)
 
-class groupby_saved(object):
+class GroupbySaved(object):
 	"""
 	Split a sequence into n sequences where n is determined by the
 	number of distinct values returned by a key function applied to each
 	element in the sequence.
 
-	>>> truthsplit = groupby_saved(['Test', '', 30, None], bool)
+	>>> truthsplit = GroupbySaved(['Test', '', 30, None], bool)
 	>>> truthsplit['x']
 	Traceback (most recent call last):
 	...
 	KeyError: 'x'
-	>>> trueItems = truthsplit[True]
-	>>> falseItems = truthsplit[False]
-	>>> tuple(iter(falseItems))
+	>>> true_items = truthsplit[True]
+	>>> false_items = truthsplit[False]
+	>>> tuple(iter(false_items))
 	('', None)
-	>>> tuple(iter(trueItems))
+	>>> tuple(iter(true_items))
 	('Test', 30)
 
-	>>> everyThirdSplit = groupby_saved(range(99), lambda n: n%3)
-	>>> zeros = everyThirdSplit[0]
-	>>> ones = everyThirdSplit[1]
-	>>> twos = everyThirdSplit[2]
+	>>> every_third_split = GroupbySaved(range(99), lambda n: n%3)
+	>>> zeros = every_third_split[0]
+	>>> ones = every_third_split[1]
+	>>> twos = every_third_split[2]
 	>>> next(zeros)
 	0
 	>>> next(zeros)
