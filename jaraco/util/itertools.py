@@ -426,9 +426,36 @@ class Peekable(object):
 		result, self.iterator = peek(self.iterator)
 		return result
 
-def first(item):
-	iterable = iter(item)
+def first(iterable):
+	"""
+	Return the first item from the iterable.
+	>>> first(xrange(11))
+	0
+	>>> first([3,2,1])
+	3
+	>>> iter = xrange(11)
+	>>> first(iter)
+	0
+	"""
+	iterable = iter(iterable)
 	return next(iterable)
+
+def last(iterable):
+	"""
+	Return the last item from the iterable, discarding the rest.
+	>>> last(xrange(20))
+	19
+	>>> last([])
+	Traceback (most recent call last):
+	...
+	ValueError: Iterable contains no items
+	"""
+	for item in iterable:
+		pass
+	try:
+		return item
+	except NameError:
+		raise ValueError("Iterable contains no items")
 
 def one(item):
 	"""
