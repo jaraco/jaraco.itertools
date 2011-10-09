@@ -13,7 +13,165 @@ import itertools
 import collections
 import math
 
-from jaraco.util import ordinalth
+from jaraco.util.numbers import ordinalth
+
+def make_rows(num_columns, seq):
+	"""
+	Make a sequence into rows of num_columns columns
+	>>> tuple(make_rows(2, [1, 2, 3, 4, 5]))
+	((1, 4), (2, 5), (3, None))
+	>>> tuple(make_rows(3, [1, 2, 3, 4, 5]))
+	((1, 3, 5), (2, 4, None))
+	"""
+	# calculate the minimum number of rows necessary to fit the list in
+	# num_columns Columns
+	num_rows, partial = divmod(len(seq), num_columns)
+	if partial:
+		num_rows += 1
+	# break the seq into num_columns of length num_rows
+	from .itertools import grouper
+	result = grouper(num_rows, seq)
+	# result is now a list of columns... transpose it to return a list
+	# of rows
+	return zip(*result)
+
+def grouper(size, seq):
+	"""
+	Take a sequence and break it up into chunks of the specified size.
+	The last chunk may be smaller than size. `seq` must follow the
+	0-indexed sequence protocol.
+
+	This works very similar to jaraco.util.iter_.grouper_nofill, except
+	it works with strings as well.
+
+	>>> tuple(grouper(3, 'foobarbaz'))
+	('foo', 'bar', 'baz')
+	>>> tuple(grouper(42, []))
+	()
+	>>> tuple(grouper(3, list(range(10))))
+	([0, 1, 2], [3, 4, 5], [6, 7, 8], [9])
+	"""
+	for i in range(0, len(seq), size):
+		yield seq[i:i+size]
+
+def bisect(seq, func = bool):
+	"""
+	Split a sequence into two sequences:  the first is elements that
+	return True for func(element) and the second for False ==
+	func(element).
+	By default, func = bool, so uses the truth value of the object.
+	"""
+	queues = groupby_saved(seq, func)
+	return queues.getFirstNQueues(2)
+
+class groupby_saved(object):
+	"""
+	Split a sequence into n sequences where n is determined by the
+	number of distinct values returned by a key function applied to each
+	element in the sequence.
+
+	>>> truthsplit = groupby_saved(['Test', '', 30, None], bool)
+	>>> truthsplit['x']
+	Traceback (most recent call last):
+	...
+	KeyError: 'x'
+	>>> trueItems = truthsplit[True]
+	>>> falseItems = truthsplit[False]
+	>>> tuple(iter(falseItems))
+	('', None)
+	>>> tuple(iter(trueItems))
+	('Test', 30)
+
+	>>> everyThirdSplit = groupby_saved(range(99), lambda n: n%3)
+	>>> zeros = everyThirdSplit[0]
+	>>> ones = everyThirdSplit[1]
+	>>> twos = everyThirdSplit[2]
+	>>> next(zeros)
+	0
+	>>> next(zeros)
+	3
+	>>> next(ones)
+	1
+	>>> next(twos)
+	2
+	>>> next(ones)
+	4
+	"""
+	def __init__(self, sequence, func = lambda x: x):
+		self.sequence = iter(sequence)
+		self.func = func
+		self.queues = dict()
+
+	def __getitem__(self, key):
+		try:
+			return self.queues[key]
+		except KeyError:
+			return self.__find_queue__(key)
+
+	def __fetch__(self):
+		"get the next item from the sequence and queue it up"
+		item = next(self.sequence)
+		key = self.func(item)
+		queue = self.queues.setdefault(key, FetchingQueue(self.__fetch__))
+		queue.enqueue(item)
+
+	def __find_queue__(self, key):
+		"search for the queue indexed by key"
+		try:
+			while not key in self.queues:
+				self.__fetch__()
+			return self.queues[key]
+		except StopIteration:
+			raise KeyError(key)
+
+	def get_first_n_queues(self, n):
+		"""
+		Run through the sequence until n queues are created and return
+		them. If fewer are created, return those plus empty iterables to
+		compensate.
+		"""
+		try:
+			while len(self.queues) < n:
+				self.__fetch__()
+		except StopIteration:
+			pass
+		empty_iter_factory = lambda: iter([])
+		values = list(self.queues.values())
+		missing = n - len(values)
+		values.extend(iter([]) for n in range(missing))
+		return values
+
+class FetchingQueue(list):
+	"""
+	An attractive queue ... just kidding.
+
+	A FIFO Queue that is supplied with a function to inject more into
+	the queue if it is empty.
+
+	>>> values = iter(xrange(10))
+	>>> get_value = lambda: globals()['q'].enqueue(next(values))
+	>>> q = FetchingQueue(get_value)
+	>>> [x for x in q] == range(10)
+	True
+
+	Note that tuple(q) or list(q) would not have worked above because
+	tuple(q) just copies the elements in the list (of which there are
+	none).
+	"""
+	def __init__(self, fetcher):
+		self._fetcher = fetcher
+
+	def next(self):
+		while not self:
+			self._fetcher()
+		return self.pop()
+
+	def __iter__(self):
+		while True:
+			yield next(self)
+
+	def enqueue(self, item):
+		self.insert(0, item)
 
 class Count(object):
 	"""
@@ -81,14 +239,14 @@ class LessThanNBlanks(object):
 
 	Can be used with filter or itertools.ifilter, for example:
 
->>> import itertools
->>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
->>> first = itertools.takewhile(LessThanNBlanks(2), sampleData)
->>> tuple(first)
-('string 1', 'string 2', '', 'string 3')
->>> first = itertools.takewhile(LessThanNBlanks(3), sampleData)
->>> tuple(first)
-('string 1', 'string 2', '', 'string 3', '', 'string 4')
+	>>> import itertools
+	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
+	>>> first = itertools.takewhile(LessThanNBlanks(2), sampleData)
+	>>> tuple(first)
+	('string 1', 'string 2', '', 'string 3')
+	>>> first = itertools.takewhile(LessThanNBlanks(3), sampleData)
+	>>> tuple(first)
+	('string 1', 'string 2', '', 'string 3', '', 'string 4')
 	"""
 	def __init__(self, nBlanks):
 		self.limit = nBlanks
@@ -107,11 +265,11 @@ class LessThanNConsecutiveBlanks(object):
 
 	Can be used with filter or itertools.ifilter, for example:
 
->>> import itertools
->>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
->>> first = itertools.takewhile(LessThanNConsecutiveBlanks(2), sampleData)
->>> tuple(first)
-('string 1', 'string 2', '', 'string 3', '', 'string 4', '')
+	>>> import itertools
+	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
+	>>> first = itertools.takewhile(LessThanNConsecutiveBlanks(2), sampleData)
+	>>> tuple(first)
+	('string 1', 'string 2', '', 'string 3', '', 'string 4', '')
 	"""
 
 	def __init__(self, nBlanks):
@@ -561,3 +719,11 @@ def balanced_rows(n, iterable, fillvalue=None):
 		if allocation < n:
 			row = itertools.chain(row, [fillvalue])
 		yield tuple(row)
+
+def reverse_lists(lists):
+	"""
+	>>> reverse_lists([[1,2,3], [4,5,6]])
+	[[3, 2, 1], [6, 5, 4]]
+	"""
+
+	return list(map(list, map(reversed, lists)))
