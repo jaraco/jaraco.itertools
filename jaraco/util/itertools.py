@@ -727,3 +727,21 @@ def reverse_lists(lists):
 	"""
 
 	return list(map(list, map(reversed, lists)))
+
+def always_iterable(item):
+	"""
+	Given an object, always return an iterable. If the item is not
+	already iterable, return a tuple containing only the item.
+
+	>>> always_iterable([1,2,3])
+	[1, 2, 3]
+	>>> always_iterable('foo')
+	('foo',)
+	>>> always_iterable(None)
+	(None,)
+	>>> always_iterable(xrange(10))
+	xrange(10)
+	"""
+	if isinstance(item, basestring) or not hasattr(item, '__iter__'):
+		item = item,
+	return item
