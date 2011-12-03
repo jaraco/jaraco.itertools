@@ -6,7 +6,7 @@ Tools for working with iterables.  Complements itertools.
 Copyright © 2008-2011 Jason R. Coombs
 """
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import operator
 import itertools
@@ -74,13 +74,13 @@ class GroupbySaved(object):
 	>>> truthsplit['x']
 	Traceback (most recent call last):
 	...
-	KeyError: 'x'
+	KeyError: u'x'
 	>>> true_items = truthsplit[True]
 	>>> false_items = truthsplit[False]
 	>>> tuple(iter(false_items))
-	('', None)
+	(u'', None)
 	>>> tuple(iter(true_items))
-	('Test', 30)
+	(u'Test', 30)
 
 	>>> every_third_split = GroupbySaved(range(99), lambda n: n%3)
 	>>> zeros = every_third_split[0]
@@ -243,10 +243,10 @@ class LessThanNBlanks(object):
 	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
 	>>> first = itertools.takewhile(LessThanNBlanks(2), sampleData)
 	>>> tuple(first)
-	('string 1', 'string 2', '', 'string 3')
+	(u'string 1', u'string 2', u'', u'string 3')
 	>>> first = itertools.takewhile(LessThanNBlanks(3), sampleData)
 	>>> tuple(first)
-	('string 1', 'string 2', '', 'string 3', '', 'string 4')
+	(u'string 1', u'string 2', u'', u'string 3', u'', u'string 4')
 	"""
 	def __init__(self, nBlanks):
 		self.limit = nBlanks
@@ -269,7 +269,7 @@ class LessThanNConsecutiveBlanks(object):
 	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
 	>>> first = itertools.takewhile(LessThanNConsecutiveBlanks(2), sampleData)
 	>>> tuple(first)
-	('string 1', 'string 2', '', 'string 3', '', 'string 4', '')
+	(u'string 1', u'string 2', u'', u'string 3', u'', u'string 4', u'')
 	"""
 
 	def __init__(self, nBlanks):
@@ -291,7 +291,7 @@ class splitter(object):
 	object that will split a string with the given arguments for each call
 	>>> s = splitter(',')
 	>>> list(s('hello, world, this is your, master calling'))
-	['hello', ' world', ' this is your', ' master calling']
+	[u'hello', u' world', u' this is your', u' master calling']
 	"""
 	def __init__(self, sep = None):
 		self.sep = sep
@@ -327,7 +327,7 @@ def grouper_nofill(n, iterable):
 	>>> tuple(c)
 	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10))
 	"""
-	nofill = type('nofill', (object,), dict())
+	nofill = type(str('nofill'), (object,), dict())
 	value_is_not_nofill = lambda v: v is not nofill
 	remove_nofill = lambda s: tuple(filter(value_is_not_nofill, s))
 	result = grouper(n, iterable, fillvalue = nofill)
@@ -434,6 +434,10 @@ def flatten(subject, test=None):
 
 	Note this will normally ignore string types as iterables.
 	>>> flatten(['ab', 'c'])
+	[u'ab', u'c']
+
+	Same for bytes
+	>>> flatten([b'ab', b'c'])
 	['ab', 'c']
 	"""
 	return list(iflatten(subject, test))
@@ -489,7 +493,7 @@ class Reusable(object):
 def roundrobin(*iterables):
 	"""
 	>>> ' '.join(roundrobin('ABC', 'D', 'EF'))
-	'A D E B F C'
+	u'A D E B F C'
 	"""
 	# Recipe credited to George Sakkis
 	pending = len(iterables)
@@ -508,10 +512,10 @@ def unique_justseen(iterable, key=None):
 	List unique elements, preserving order. Remember only the element just seen.
 
 	>>> ' '.join(unique_justseen('AAAABBBCCDAABBB'))
-	'A B C D A B'
+	u'A B C D A B'
 
-	>>> ' '.join(unique_justseen('ABBCcAD', str.lower))
-	'A B C A D'
+	>>> ' '.join(unique_justseen('ABBCcAD', unicode.lower))
+	u'A B C A D'
 	"""
 	return itertools.imap(
 		next, itertools.imap(
@@ -621,7 +625,7 @@ def one(item):
 	if elements remain in the iterable after the first.
 
 	>>> one(['val'])
-	'val'
+	u'val'
 	>>> one(['val', 'other'])
 	Traceback (most recent call last):
 	...
@@ -736,7 +740,7 @@ def always_iterable(item):
 	>>> always_iterable([1,2,3])
 	[1, 2, 3]
 	>>> always_iterable('foo')
-	('foo',)
+	(u'foo',)
 	>>> always_iterable(None)
 	(None,)
 	>>> always_iterable(xrange(10))
