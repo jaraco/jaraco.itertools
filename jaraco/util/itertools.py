@@ -365,7 +365,7 @@ def consume(iterator, n=None):
 		# feed the entire iterator into a zero-length deque
 		collections.deque(iterator, maxlen=0)
 	else:
-		# advance to the emtpy slice starting at position n
+		# advance to the empty slice starting at position n
 		next(islice(iterator, n, n), None)
 
 class Counter(object):
