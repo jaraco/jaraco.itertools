@@ -6,7 +6,7 @@ Tools for working with iterables.  Complements itertools.
 Copyright © 2008-2011 Jason R. Coombs
 """
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
 import operator
 import itertools
@@ -34,25 +34,6 @@ def make_rows(num_columns, seq):
 	# result is now a list of columns... transpose it to return a list
 	# of rows
 	return zip(*result)
-
-def grouper(size, seq):
-	"""
-	Take a sequence and break it up into chunks of the specified size.
-	The last chunk may be smaller than size. `seq` must follow the
-	0-indexed sequence protocol.
-
-	This works very similar to jaraco.util.iter_.grouper_nofill, except
-	it works with strings as well.
-
-	>>> tuple(grouper(3, 'foobarbaz'))
-	('foo', 'bar', 'baz')
-	>>> tuple(grouper(42, []))
-	()
-	>>> tuple(grouper(3, list(range(10))))
-	([0, 1, 2], [3, 4, 5], [6, 7, 8], [9])
-	"""
-	for i in range(0, len(seq), size):
-		yield seq[i:i+size]
 
 def bisect(seq, func = bool):
 	"""
@@ -135,7 +116,6 @@ class GroupbySaved(object):
 				self.__fetch__()
 		except StopIteration:
 			pass
-		empty_iter_factory = lambda: iter([])
 		values = list(self.queues.values())
 		missing = n - len(values)
 		values.extend(iter([]) for n in range(missing))
@@ -179,6 +159,9 @@ class Count(object):
 	False on the N+1st call.  Useful for use with takewhile.
 	>>> tuple(itertools.takewhile(Count(5), range(20)))
 	(0, 1, 2, 3, 4)
+
+	>>> print('catch', Count(5))
+	catch at most 5
 	"""
 	def __init__(self, limit):
 		self.count = 0
@@ -195,8 +178,8 @@ class Count(object):
 		return result
 
 	def __str__(self):
-		if limit:
-			return 'at most %d' % limit
+		if self.limit:
+			return 'at most %d' % self.limit
 		else:
 			return 'all'
 
@@ -223,7 +206,7 @@ class islice(object):
 		return result
 
 	def _formatArgs(self):
-		baseOneRange = lambda a_b: '%d to %d' % (a_b[0]+1,a_b[1])
+		baseOneRange = lambda a_b: '%d to %d' % (a_b[0] + 1, a_b[1])
 		if len(self.sliceArgs) == 1:
 			result = 'at most %d' % self.sliceArgs
 		if len(self.sliceArgs) == 2:
@@ -315,6 +298,15 @@ def grouper(n, iterable, fillvalue=None):
 	>>> c = grouper(3, range(11))
 	>>> tuple(c)
 	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10, None))
+
+	>>> tuple(grouper(42, []))
+	()
+
+	It doesn't quite give what you might expect for a string.
+	For that, use grouper_nofill_str.
+	>>> tuple(grouper(3, 'foobarbaz'))
+	((u'f', u'o', u'o'), (u'b', u'a', u'r'), (u'b', u'a', u'z'))
+
 	"""
 	args = [iter(iterable)] * n
 	return itertools.izip_longest(*args, fillvalue=fillvalue)
@@ -324,6 +316,7 @@ def grouper_nofill(n, iterable):
 	Just like grouper, but doesn't add any fill values.
 
 	>>> c = grouper_nofill(3, range(11))
+
 	>>> tuple(c)
 	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10))
 	"""
@@ -332,6 +325,29 @@ def grouper_nofill(n, iterable):
 	remove_nofill = lambda s: tuple(filter(value_is_not_nofill, s))
 	result = grouper(n, iterable, fillvalue = nofill)
 	return map(remove_nofill, result)
+
+def grouper_nofill_str(n, iterable):
+	"""
+	Take a sequence and break it up into chunks of the specified size.
+	The last chunk may be smaller than size.
+
+	This works very similar to grouper_nofill, except
+	it works with strings as well.
+
+	>>> tuple(grouper_nofill_str(3, 'foobarbaz'))
+	(u'foo', u'bar', u'baz')
+
+	You can still use it on non-strings too if you like.
+	>>> tuple(grouper_nofill_str(42, []))
+	()
+
+	>>> tuple(grouper_nofill_str(3, list(range(10))))
+	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9,))
+	"""
+	res = grouper_nofill(n, iterable)
+	if isinstance(iterable, basestring):
+		res = (''.join(item) for item in res)
+	return res
 
 # from Python 2.6 docs
 def pairwise(iterable):
@@ -483,7 +499,7 @@ class Reusable(object):
 	def next(self):
 		try:
 			return next(self.__iterator)
-		except StopIteration as e:
+		except StopIteration:
 			# we're still going to raise the exception, but first
 			#  reset the iterator so it's good for next time
 			self.reset()
