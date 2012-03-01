@@ -687,16 +687,16 @@ def window(iter, pre_size=1, post_size=1):
 	((7, 8), 9, (None,))
 	"""
 	pre_iter, iter = itertools.tee(iter)
-	pre_iter = itertools.chain((None,)*pre_size, pre_iter)
+	pre_iter = itertools.chain((None,) * pre_size, pre_iter)
 	pre_iter = nwise(pre_iter, pre_size)
 	post_iter, iter = itertools.tee(iter)
-	post_iter = itertools.chain(post_iter, (None,)*post_size)
+	post_iter = itertools.chain(post_iter, (None,) * post_size)
 	post_iter = nwise(post_iter, post_size)
 	next(post_iter, None)
 	return itertools.izip(pre_iter, iter, post_iter)
 
 class IterSaver(object):
-	def __init__(n, iterable):
+	def __init__(self, n, iterable):
 		self.n = n
 		self.iterable = iterable
 		self.buffer = collections.deque()
@@ -724,7 +724,7 @@ def partition_items(count, bin_size):
 	num_bins = int(math.ceil(count / float(bin_size)))
 	bins = [0] * num_bins
 	for i in xrange(count):
-		bins[i%num_bins] += 1
+		bins[i % num_bins] += 1
 	return bins
 
 def balanced_rows(n, iterable, fillvalue=None):
