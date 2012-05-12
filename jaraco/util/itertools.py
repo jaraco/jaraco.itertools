@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
 
-"""jaraco.iter_
+"""jaraco.itertools
 Tools for working with iterables.  Complements itertools.
 
-Copyright © 2008-2011 Jason R. Coombs
+Copyright © 2008-2012 Jason R. Coombs
 """
 
 from __future__ import absolute_import, unicode_literals, print_function
@@ -360,13 +360,7 @@ def pairwise(iterable):
 	next(b, None)
 	return itertools.izip(a, b)
 
-def chain(sequences):
-	"""functions like itertools.chain, except chains everything in sequences.
-	Equivalent to itertools.chain(*sequences) except sequences is evaluated
-	on demand."""
-	for sequence in sequences:
-		for item in sequence:
-			yield item
+chain = itertools.chain.from_iterable
 
 def infiniteCall(f, *args):
 	"Perpetually yield the result of calling function f."
