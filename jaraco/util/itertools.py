@@ -755,6 +755,9 @@ def always_iterable(item):
 	(None,)
 	>>> always_iterable(xrange(10))
 	xrange(10)
+	>>> def _test_func(): yield "I'm iterable"
+	>>> print(next(always_iterable(_test_func())))
+	I'm iterable
 	"""
 	if isinstance(item, basestring) or not hasattr(item, '__iter__'):
 		item = item,
