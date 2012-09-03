@@ -12,8 +12,10 @@ import operator
 import itertools
 import collections
 import math
+import functools
 
 from jaraco.util.numbers import ordinalth
+from .exceptions import throws_exception
 
 def make_rows(num_columns, seq):
 	"""
@@ -457,6 +459,19 @@ def empty():
 	An empty iterator.
 	"""
 	return iter(tuple())
+
+def is_empty(iterable):
+	"""
+	Return whether the iterable is empty or not. Consumes at most one item
+	from the iterator to test.
+
+	>>> is_empty(xrange(0))
+	True
+	>>> is_empty(xrange(1))
+	False
+	"""
+	get_next = functools.partial(next, iter(iterable))
+	return throws_exception(get_next, StopIteration)
 
 class Reusable(object):
 	"""
