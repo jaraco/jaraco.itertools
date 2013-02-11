@@ -125,8 +125,6 @@ class GroupbySaved(object):
 
 class FetchingQueue(list):
 	"""
-	An attractive queue ... just kidding.
-
 	A FIFO Queue that is supplied with a function to inject more into
 	the queue if it is empty.
 
