@@ -782,3 +782,26 @@ def always_iterable(item):
 	if isinstance(item, basestring) or not hasattr(item, '__iter__'):
 		item = item,
 	return item
+
+def suppress_exceptions(callables, *exceptions):
+	"""
+	Call each callable in callables, suppressing any exceptions supplied. If
+	no exception classes are supplied, all Exceptions will be suppressed.
+
+	>>> import functools
+	>>> c1 = functools.partial(int, 'a')
+	>>> c2 = functools.partial(int, '10')
+	>>> list(suppress_exceptions((c1, c2)))
+	[10]
+	>>> list(suppress_exceptions((c1, c2), KeyError))
+	Traceback (most recent call last):
+	...
+	ValueError: invalid literal for int() with base 10: 'a'
+	"""
+	if not exceptions:
+		exceptions = Exception,
+	for callable in callables:
+		try:
+			yield callable()
+		except exceptions:
+			pass
