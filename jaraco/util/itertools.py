@@ -550,6 +550,36 @@ def unique_justseen(iterable, key=None):
 			itertools.groupby(iterable, key)
 		))
 
+def every_other(iterable):
+	"""
+	Yield every other item from the iterable
+
+	>>> ' '.join(every_other('abcdefg'))
+	u'a c e g'
+	"""
+	items = iter(iterable)
+	while True:
+		yield next(items)
+		next(items)
+
+def remove_duplicates(iterable, key=None):
+	"""
+	Given an iterable with items that may come in as sequential duplicates,
+	remove those duplicates.
+
+	Unlike unique_justseen, this function does not remove triplicates.
+
+	>>> ' '.join(remove_duplicates('abcaabbccaaabbbcccbcbc'))
+	u'a b c a b c a a b b c c b c b c'
+	>>> ' '.join(remove_duplicates('aaaabbbbb'))
+	u'a a b b b'
+	"""
+	return itertools.chain.from_iterable(itertools.imap(
+		every_other, itertools.imap(
+			operator.itemgetter(1),
+			itertools.groupby(iterable, key)
+		)))
+
 def skip_first(iterable):
 	"""
 	Skip the first element of an iterable
