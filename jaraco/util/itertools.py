@@ -321,10 +321,11 @@ def grouper_nofill(n, iterable):
 	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10))
 	"""
 	nofill = type(str('nofill'), (object,), dict())
-	value_is_not_nofill = lambda v: v is not nofill
-	remove_nofill = lambda s: tuple(filter(value_is_not_nofill, s))
-	result = grouper(n, iterable, fillvalue = nofill)
-	return map(remove_nofill, result)
+	result = grouper(n, iterable, fillvalue=nofill)
+	return (
+		tuple(value for value in item if value is not nofill)
+		for item in result
+	)
 
 def grouper_nofill_str(n, iterable):
 	"""
