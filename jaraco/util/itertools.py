@@ -555,6 +555,30 @@ def unique_justseen(iterable, key=None):
 			itertools.groupby(iterable, key)
 		))
 
+# from Python 3.3 documentation
+def unique_everseen(iterable, key=None):
+	"""
+	List unique elements, preserving order. Remember all elements ever seen.
+
+	>>> print(' '.join(unique_everseen('AAAABBBCCDAABBB')))
+	A B C D
+
+	>>> print(' '.join(unique_everseen('ABBCcAD', unicode.lower)))
+	A B C D
+	"""
+	seen = set()
+	seen_add = seen.add
+	if key is None:
+		for element in itertools.ifilterfalse(seen.__contains__, iterable):
+			seen_add(element)
+			yield element
+	else:
+		for element in iterable:
+			k = key(element)
+			if k not in seen:
+				seen_add(k)
+				yield element
+
 def every_other(iterable):
 	"""
 	Yield every other item from the iterable
