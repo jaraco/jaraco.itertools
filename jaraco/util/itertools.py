@@ -19,6 +19,12 @@ from . import six
 from jaraco.util.numbers import ordinalth
 from .exceptions import throws_exception
 
+
+six.add_move(six.MovedAttribute('zip_longest', 'itertools', 'itertools',
+	new_attr='zip_longest', old_attr='izip_longest'))
+six.add_move(six.MovedAttribute('filterfalse', 'itertools', 'itertools',
+	new_attr='filterfalse', old_attr='ifilterfalse'))
+
 def make_rows(num_columns, seq):
 	"""
 	Make a sequence into rows of num_columns columns
@@ -312,9 +318,7 @@ def grouper(n, iterable, fillvalue=None):
 
 	"""
 	args = [iter(iterable)] * n
-	# todo: does a later version of six handle this rename?
-	zip_longest = getattr(itertools, 'zip_longest', getattr(itertools, 'izip_longest', None))
-	return zip_longest(*args, fillvalue=fillvalue)
+	return six.moves.zip_longest(*args, fillvalue=fillvalue)
 
 def grouper_nofill(n, iterable):
 	"""
@@ -372,7 +376,7 @@ def pairwise(iterable):
 	"""
 	a, b = itertools.tee(iterable)
 	next(b, None)
-	return six.zip(a, b)
+	return six.moves.zip(a, b)
 
 chain = itertools.chain.from_iterable
 
@@ -537,7 +541,8 @@ def roundrobin(*iterables):
 	"""
 	# Recipe credited to George Sakkis
 	pending = len(iterables)
-	nexts = itertools.cycle([iter(it).next for it in iterables])
+	next_method = '__next__' if six.PY3 else 'next'
+	nexts = itertools.cycle([getattr(iter(it), next_method) for it in iterables])
 	while pending:
 		try:
 			for next in nexts:
@@ -554,11 +559,11 @@ def unique_justseen(iterable, key=None):
 	>>> ' '.join(unique_justseen('AAAABBBCCDAABBB'))
 	'A B C D A B'
 
-	>>> ' '.join(unique_justseen('ABBCcAD', unicode.lower))
+	>>> ' '.join(unique_justseen('ABBCcAD', six.text_type.lower))
 	'A B C A D'
 	"""
-	return itertools.imap(
-		next, itertools.imap(
+	return six.moves.map(
+		next, six.moves.map(
 			operator.itemgetter(1),
 			itertools.groupby(iterable, key)
 		))
@@ -571,13 +576,13 @@ def unique_everseen(iterable, key=None):
 	>>> print(' '.join(unique_everseen('AAAABBBCCDAABBB')))
 	A B C D
 
-	>>> print(' '.join(unique_everseen('ABBCcAD', unicode.lower)))
+	>>> print(' '.join(unique_everseen('ABBCcAD', six.text_type.lower)))
 	A B C D
 	"""
 	seen = set()
 	seen_add = seen.add
 	if key is None:
-		for element in itertools.ifilterfalse(seen.__contains__, iterable):
+		for element in six.moves.filterfalse(seen.__contains__, iterable):
 			seen_add(element)
 			yield element
 	else:
@@ -611,8 +616,8 @@ def remove_duplicates(iterable, key=None):
 	>>> ' '.join(remove_duplicates('aaaabbbbb'))
 	'a a b b b'
 	"""
-	return itertools.chain.from_iterable(itertools.imap(
-		every_other, itertools.imap(
+	return itertools.chain.from_iterable(six.moves.map(
+		every_other, six.moves.map(
 			operator.itemgetter(1),
 			itertools.groupby(iterable, key)
 		)))
@@ -745,7 +750,7 @@ def nwise(iter, n):
 	while len(iterset) < n:
 		iterset[-1:] = itertools.tee(iterset[-1])
 		next(iterset[-1], None)
-	return itertools.izip(*iterset)
+	return six.moves.zip(*iterset)
 
 def window(iter, pre_size=1, post_size=1):
 	"""
@@ -772,7 +777,7 @@ def window(iter, pre_size=1, post_size=1):
 	post_iter = itertools.chain(post_iter, (None,) * post_size)
 	post_iter = nwise(post_iter, post_size)
 	next(post_iter, None)
-	return itertools.izip(pre_iter, iter, post_iter)
+	return six.moves.zip(pre_iter, iter, post_iter)
 
 class IterSaver(object):
 	def __init__(self, n, iterable):
@@ -803,7 +808,7 @@ def partition_items(count, bin_size):
 	"""
 	num_bins = int(math.ceil(count / float(bin_size)))
 	bins = [0] * num_bins
-	for i in xrange(count):
+	for i in six.moves.xrange(count):
 		bins[i % num_bins] += 1
 	return bins
 
