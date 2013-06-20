@@ -14,6 +14,8 @@ import collections
 import math
 import functools
 
+from . import six
+
 from jaraco.util.numbers import ordinalth
 from .exceptions import throws_exception
 
@@ -57,13 +59,13 @@ class GroupbySaved(object):
 	>>> truthsplit['x']
 	Traceback (most recent call last):
 	...
-	KeyError: u'x'
+	KeyError: 'x'
 	>>> true_items = truthsplit[True]
 	>>> false_items = truthsplit[False]
 	>>> tuple(iter(false_items))
-	(u'', None)
+	('', None)
 	>>> tuple(iter(true_items))
-	(u'Test', 30)
+	('Test', 30)
 
 	>>> every_third_split = GroupbySaved(range(99), lambda n: n%3)
 	>>> zeros = every_third_split[0]
@@ -128,10 +130,10 @@ class FetchingQueue(list):
 	A FIFO Queue that is supplied with a function to inject more into
 	the queue if it is empty.
 
-	>>> values = iter(xrange(10))
+	>>> values = iter(range(10))
 	>>> get_value = lambda: globals()['q'].enqueue(next(values))
 	>>> q = FetchingQueue(get_value)
-	>>> [x for x in q] == range(10)
+	>>> [x for x in q] == list(range(10))
 	True
 
 	Note that tuple(q) or list(q) would not have worked above because
@@ -141,10 +143,11 @@ class FetchingQueue(list):
 	def __init__(self, fetcher):
 		self._fetcher = fetcher
 
-	def next(self):
+	def __next__(self):
 		while not self:
 			self._fetcher()
 		return self.pop()
+	next = __next__
 
 	def __iter__(self):
 		while True:
@@ -226,10 +229,10 @@ class LessThanNBlanks(object):
 	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
 	>>> first = itertools.takewhile(LessThanNBlanks(2), sampleData)
 	>>> tuple(first)
-	(u'string 1', u'string 2', u'', u'string 3')
+	('string 1', 'string 2', '', 'string 3')
 	>>> first = itertools.takewhile(LessThanNBlanks(3), sampleData)
 	>>> tuple(first)
-	(u'string 1', u'string 2', u'', u'string 3', u'', u'string 4')
+	('string 1', 'string 2', '', 'string 3', '', 'string 4')
 	"""
 	def __init__(self, nBlanks):
 		self.limit = nBlanks
@@ -252,7 +255,7 @@ class LessThanNConsecutiveBlanks(object):
 	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
 	>>> first = itertools.takewhile(LessThanNConsecutiveBlanks(2), sampleData)
 	>>> tuple(first)
-	(u'string 1', u'string 2', u'', u'string 3', u'', u'string 4', u'')
+	('string 1', 'string 2', '', 'string 3', '', 'string 4', '')
 	"""
 
 	def __init__(self, nBlanks):
@@ -274,7 +277,7 @@ class splitter(object):
 	object that will split a string with the given arguments for each call
 	>>> s = splitter(',')
 	>>> list(s('hello, world, this is your, master calling'))
-	[u'hello', u' world', u' this is your', u' master calling']
+	['hello', ' world', ' this is your', ' master calling']
 	"""
 	def __init__(self, sep = None):
 		self.sep = sep
@@ -305,11 +308,13 @@ def grouper(n, iterable, fillvalue=None):
 	It doesn't quite give what you might expect for a string.
 	For that, use grouper_nofill_str.
 	>>> tuple(grouper(3, 'foobarbaz'))
-	((u'f', u'o', u'o'), (u'b', u'a', u'r'), (u'b', u'a', u'z'))
+	(('f', 'o', 'o'), ('b', 'a', 'r'), ('b', 'a', 'z'))
 
 	"""
 	args = [iter(iterable)] * n
-	return itertools.izip_longest(*args, fillvalue=fillvalue)
+	# todo: does a later version of six handle this rename?
+	zip_longest = getattr(itertools, 'zip_longest', getattr(itertools, 'izip_longest', None))
+	return zip_longest(*args, fillvalue=fillvalue)
 
 def grouper_nofill(n, iterable):
 	"""
@@ -318,7 +323,7 @@ def grouper_nofill(n, iterable):
 	>>> c = grouper_nofill(3, range(11))
 
 	c should be an iterator
-	>>> hasattr(c, 'next')
+	>>> isinstance(c, collections.Iterable)
 	True
 
 	>>> tuple(c)
@@ -340,7 +345,7 @@ def grouper_nofill_str(n, iterable):
 	it works with strings as well.
 
 	>>> tuple(grouper_nofill_str(3, 'foobarbaz'))
-	(u'foo', u'bar', u'baz')
+	('foo', 'bar', 'baz')
 
 	You can still use it on non-strings too if you like.
 	>>> tuple(grouper_nofill_str(42, []))
@@ -350,7 +355,7 @@ def grouper_nofill_str(n, iterable):
 	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9,))
 	"""
 	res = grouper_nofill(n, iterable)
-	if isinstance(iterable, basestring):
+	if isinstance(iterable, six.string_types):
 		res = (''.join(item) for item in res)
 	return res
 
@@ -367,7 +372,7 @@ def pairwise(iterable):
 	"""
 	a, b = itertools.tee(iterable)
 	next(b, None)
-	return itertools.izip(a, b)
+	return six.zip(a, b)
 
 chain = itertools.chain.from_iterable
 
@@ -394,10 +399,11 @@ class Counter(object):
 
 	def __iter__(self): return self
 
-	def next(self):
+	def __next__(self):
 		index, result = self.__i__.next()
 		self.__count__ = index + 1
 		return result
+	next = __next__
 
 	def GetCount(self):
 		return self.__count__
@@ -413,11 +419,12 @@ class iterable_test(dict):
 	>>> test[[]]
 	True
 	"""
-	def __init__(self, ignore_classes=[basestring]):
+	def __init__(self, ignore_classes=six.string_types+(six.binary_type,)):
 		"""ignore_classes must include str, because if a string
 		is iterable, so is a single character, and the routine runs
 		into an infinite recursion"""
-		assert basestring in ignore_classes, 'str must be in ignore_classes'
+		assert set(six.string_types) <= set(ignore_classes), (
+			'str must be in ignore_classes')
 		self.ignore_classes = ignore_classes
 
 	def __getitem__(self, candidate):
@@ -453,11 +460,11 @@ def flatten(subject, test=None):
 
 	Note this will normally ignore string types as iterables.
 	>>> flatten(['ab', 'c'])
-	[u'ab', u'c']
+	['ab', 'c']
 
 	Same for bytes
 	>>> flatten([b'ab', b'c'])
-	['ab', 'c']
+	[b'ab', b'c']
 	"""
 	return list(iflatten(subject, test))
 
@@ -472,9 +479,9 @@ def is_empty(iterable):
 	Return whether the iterable is empty or not. Consumes at most one item
 	from the iterator to test.
 
-	>>> is_empty(xrange(0))
+	>>> is_empty(iter(range(0)))
 	True
-	>>> is_empty(xrange(1))
+	>>> is_empty(iter(range(1)))
 	False
 	"""
 	get_next = functools.partial(next, iter(iterable))
@@ -512,7 +519,7 @@ class Reusable(object):
 		"""
 		self.__iterator, self.__saved = itertools.tee(self.__saved)
 
-	def next(self):
+	def __next__(self):
 		try:
 			return next(self.__iterator)
 		except StopIteration:
@@ -520,12 +527,13 @@ class Reusable(object):
 			#  reset the iterator so it's good for next time
 			self.reset()
 			raise
+	next = __next__
 
 # from Python 2.6 docs
 def roundrobin(*iterables):
 	"""
 	>>> ' '.join(roundrobin('ABC', 'D', 'EF'))
-	u'A D E B F C'
+	'A D E B F C'
 	"""
 	# Recipe credited to George Sakkis
 	pending = len(iterables)
@@ -544,10 +552,10 @@ def unique_justseen(iterable, key=None):
 	List unique elements, preserving order. Remember only the element just seen.
 
 	>>> ' '.join(unique_justseen('AAAABBBCCDAABBB'))
-	u'A B C D A B'
+	'A B C D A B'
 
 	>>> ' '.join(unique_justseen('ABBCcAD', unicode.lower))
-	u'A B C A D'
+	'A B C A D'
 	"""
 	return itertools.imap(
 		next, itertools.imap(
@@ -584,7 +592,7 @@ def every_other(iterable):
 	Yield every other item from the iterable
 
 	>>> ' '.join(every_other('abcdefg'))
-	u'a c e g'
+	'a c e g'
 	"""
 	items = iter(iterable)
 	while True:
@@ -599,9 +607,9 @@ def remove_duplicates(iterable, key=None):
 	Unlike unique_justseen, this function does not remove triplicates.
 
 	>>> ' '.join(remove_duplicates('abcaabbccaaabbbcccbcbc'))
-	u'a b c a b c a a b b c c b c b c'
+	'a b c a b c a a b b c c b c b c'
 	>>> ' '.join(remove_duplicates('aaaabbbbb'))
-	u'a a b b b'
+	'a a b b b'
 	"""
 	return itertools.chain.from_iterable(itertools.imap(
 		every_other, itertools.imap(
@@ -637,7 +645,7 @@ class Peekable(object):
 	"""
 	Wrapper for a traditional iterable to give it a peek attribute.
 
-	>>> nums = Peekable(xrange(2))
+	>>> nums = Peekable(range(2))
 	>>> nums.peek()
 	0
 	>>> nums.peek()
@@ -667,8 +675,9 @@ class Peekable(object):
 	def __iter__(self):
 		return self
 
-	def next(self):
+	def __next__(self):
 		return next(self.iterator)
+	next = __next__
 
 	def peek(self):
 		result, self.iterator = peek(self.iterator)
@@ -677,11 +686,11 @@ class Peekable(object):
 def first(iterable):
 	"""
 	Return the first item from the iterable.
-	>>> first(xrange(11))
+	>>> first(range(11))
 	0
 	>>> first([3,2,1])
 	3
-	>>> iter = xrange(11)
+	>>> iter = range(11)
 	>>> first(iter)
 	0
 	"""
@@ -691,7 +700,7 @@ def first(iterable):
 def last(iterable):
 	"""
 	Return the last item from the iterable, discarding the rest.
-	>>> last(xrange(20))
+	>>> last(range(20))
 	19
 	>>> last([])
 	Traceback (most recent call last):
@@ -711,7 +720,7 @@ def one(item):
 	if elements remain in the iterable after the first.
 
 	>>> one(['val'])
-	u'val'
+	'val'
 	>>> one(['val', 'other'])
 	Traceback (most recent call last):
 	...
@@ -771,10 +780,11 @@ class IterSaver(object):
 		self.iterable = iterable
 		self.buffer = collections.deque()
 
-	def next(self):
+	def __next__(self):
 		while len(self.buffer) <= self.n:
 			self.buffer.append(next(self.iterable))
 		return self.buffer.popleft()
+	next = __next__
 
 def partition_items(count, bin_size):
 	"""
@@ -827,18 +837,18 @@ def always_iterable(item):
 	>>> always_iterable([1,2,3])
 	[1, 2, 3]
 	>>> always_iterable('foo')
-	(u'foo',)
+	('foo',)
 	>>> always_iterable(None)
 	()
-	>>> always_iterable(xrange(10))
-	xrange(10)
+	>>> always_iterable(range(10))
+	range(0, 10)
 	>>> def _test_func(): yield "I'm iterable"
 	>>> print(next(always_iterable(_test_func())))
 	I'm iterable
 	"""
 	if item is None:
 		item = ()
-	if isinstance(item, basestring) or not hasattr(item, '__iter__'):
+	if isinstance(item, six.string_types) or not hasattr(item, '__iter__'):
 		item = item,
 	return item
 
