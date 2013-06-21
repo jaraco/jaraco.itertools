@@ -14,7 +14,7 @@ import collections
 import math
 import functools
 
-from . import six
+import six
 
 from jaraco.util.numbers import ordinalth
 from .exceptions import throws_exception
