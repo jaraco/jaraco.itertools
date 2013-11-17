@@ -394,7 +394,7 @@ def consume(iterator, n=None):
 		collections.deque(iterator, maxlen=0)
 	else:
 		# advance to the empty slice starting at position n
-		next(islice(iterator, n, n), None)
+		next(itertools.islice(iterator, n, n), None)
 
 class Counter(object):
 	def __init__(self, i):
