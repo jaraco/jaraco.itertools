@@ -691,6 +691,7 @@ class Peekable(object):
 def first(iterable):
 	"""
 	Return the first item from the iterable.
+
 	>>> first(range(11))
 	0
 	>>> first([3,2,1])
@@ -698,6 +699,7 @@ def first(iterable):
 	>>> iter = range(11)
 	>>> first(iter)
 	0
+
 	"""
 	iterable = iter(iterable)
 	return next(iterable)
@@ -705,12 +707,14 @@ def first(iterable):
 def last(iterable):
 	"""
 	Return the last item from the iterable, discarding the rest.
+
 	>>> last(range(20))
 	19
 	>>> last([])
 	Traceback (most recent call last):
 	...
 	ValueError: Iterable contains no items
+
 	"""
 	for item in iterable:
 		pass
