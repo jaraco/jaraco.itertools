@@ -730,19 +730,26 @@ def one(item):
 
 	>>> one(['val'])
 	'val'
+
 	>>> one(['val', 'other'])
 	Traceback (most recent call last):
 	...
-	ValueError: item contained more than one value
+	ValueError: too many values to unpack (expected 1)
+
 	>>> one([])
 	Traceback (most recent call last):
 	...
-	StopIteration
+	ValueError: need more than 0 values to unpack
+
+	>>> numbers = itertools.count()
+	>>> one(numbers)
+	Traceback (most recent call last):
+	...
+	ValueError: too many values to unpack (expected 1)
+	>>> next(numbers)
+	2
 	"""
-	iterable = iter(item)
-	result = next(iterable)
-	if tuple(itertools.islice(iterable, 1)):
-		raise ValueError("item contained more than one value")
+	result, = item
 	return result
 
 def nwise(iter, n):
