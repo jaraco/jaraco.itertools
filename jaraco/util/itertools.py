@@ -13,6 +13,7 @@ import itertools
 import collections
 import math
 import functools
+import queue
 
 import six
 
@@ -131,7 +132,7 @@ class GroupbySaved(object):
 		values.extend(iter([]) for n in range(missing))
 		return values
 
-class FetchingQueue(list):
+class FetchingQueue(queue.Queue):
 	"""
 	A FIFO Queue that is supplied with a function to inject more into
 	the queue if it is empty.
@@ -147,12 +148,13 @@ class FetchingQueue(list):
 	none).
 	"""
 	def __init__(self, fetcher):
+		super(FetchingQueue, self).__init__()
 		self._fetcher = fetcher
 
 	def __next__(self):
-		while not self:
+		while self.empty():
 			self._fetcher()
-		return self.pop()
+		return self.get()
 	next = __next__
 
 	def __iter__(self):
@@ -160,7 +162,7 @@ class FetchingQueue(list):
 			yield next(self)
 
 	def enqueue(self, item):
-		self.insert(0, item)
+		self.put_nowait(item)
 
 class Count(object):
 	"""
