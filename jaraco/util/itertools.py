@@ -3,7 +3,7 @@
 """jaraco.itertools
 Tools for working with iterables.  Complements itertools.
 
-Copyright © 2008-2012 Jason R. Coombs
+Copyright © 2008-2014 Jason R. Coombs
 """
 
 from __future__ import absolute_import, unicode_literals, print_function
