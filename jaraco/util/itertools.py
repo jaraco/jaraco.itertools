@@ -325,38 +325,10 @@ def grouper_nofill_str(n, iterable):
 		res = (''.join(item) for item in res)
 	return res
 
-# from Python 2.6 docs
-def pairwise(iterable):
-	"""
-	s -> (s0,s1), (s1,s2), (s2, s3), ...
-	>>> list(pairwise([1,2,3,4]))
-	[(1, 2), (2, 3), (3, 4)]
-	>>> list(pairwise([1]))
-	[]
-	>>> list(pairwise([]))
-	[]
-	"""
-	a, b = itertools.tee(iterable)
-	next(b, None)
-	return six.moves.zip(a, b)
-
-chain = itertools.chain.from_iterable
-
 def infiniteCall(f, *args):
 	"Perpetually yield the result of calling function f."
 	while True:
 		yield f(*args)
-
-# from Python 2.7 docs
-def consume(iterator, n=None):
-	"Advance the iterator n-steps ahead. If n is none, consume entirely."
-	# Use functions that consume iterators at C speed.
-	if n is None:
-		# feed the entire iterator into a zero-length deque
-		collections.deque(iterator, maxlen=0)
-	else:
-		# advance to the empty slice starting at position n
-		next(itertools.islice(iterator, n, n), None)
 
 class Counter(object):
 	def __init__(self, i):
@@ -495,65 +467,6 @@ class Reusable(object):
 			raise
 	next = __next__
 
-# from Python 2.6 docs
-def roundrobin(*iterables):
-	"""
-	>>> ' '.join(roundrobin('ABC', 'D', 'EF'))
-	'A D E B F C'
-	"""
-	# Recipe credited to George Sakkis
-	pending = len(iterables)
-	next_method = '__next__' if six.PY3 else 'next'
-	nexts = itertools.cycle([getattr(iter(it), next_method) for it in iterables])
-	while pending:
-		try:
-			for next in nexts:
-				yield next()
-		except StopIteration:
-			pending -= 1
-			nexts = itertools.cycle(itertools.islice(nexts, pending))
-
-# from Python 3.1 documentation
-def unique_justseen(iterable, key=None):
-	"""
-	List unique elements, preserving order. Remember only the element just seen.
-
-	>>> ' '.join(unique_justseen('AAAABBBCCDAABBB'))
-	'A B C D A B'
-
-	>>> ' '.join(unique_justseen('ABBCcAD', six.text_type.lower))
-	'A B C A D'
-	"""
-	return six.moves.map(
-		next, six.moves.map(
-			operator.itemgetter(1),
-			itertools.groupby(iterable, key)
-		))
-
-# from Python 3.3 documentation
-def unique_everseen(iterable, key=None):
-	"""
-	List unique elements, preserving order. Remember all elements ever seen.
-
-	>>> print(' '.join(unique_everseen('AAAABBBCCDAABBB')))
-	A B C D
-
-	>>> print(' '.join(unique_everseen('ABBCcAD', six.text_type.lower)))
-	A B C D
-	"""
-	seen = set()
-	seen_add = seen.add
-	if key is None:
-		for element in six.moves.filterfalse(seen.__contains__, iterable):
-			seen_add(element)
-			yield element
-	else:
-		for element in iterable:
-			k = key(element)
-			if k not in seen:
-				seen_add(k)
-				yield element
-
 def every_other(iterable):
 	"""
 	Yield every other item from the iterable
@@ -684,35 +597,6 @@ def last(iterable):
 		return item
 	except NameError:
 		raise ValueError("Iterable contains no items")
-
-def one(item):
-	"""
-	Return the first element from the iterable, but raise an exception
-	if elements remain in the iterable after the first.
-
-	>>> one(['val'])
-	'val'
-
-	>>> one(['val', 'other'])
-	Traceback (most recent call last):
-	...
-	ValueError: too many values to unpack (expected 1)
-
-	>>> one([])
-	Traceback (most recent call last):
-	...
-	ValueError: need more than 0 values to unpack
-
-	>>> numbers = itertools.count()
-	>>> one(numbers)
-	Traceback (most recent call last):
-	...
-	ValueError: too many values to unpack (expected 1)
-	>>> next(numbers)
-	2
-	"""
-	result, = item
-	return result
 
 def nwise(iter, n):
 	"""
