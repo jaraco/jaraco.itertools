@@ -16,6 +16,8 @@ import functools
 import queue
 
 import six
+from more_itertools import more
+from more_itertools import recipes
 
 from jaraco.util.numbers import ordinalth
 from .exceptions import throws_exception
@@ -40,8 +42,7 @@ def make_rows(num_columns, seq):
 	if partial:
 		num_rows += 1
 	# break the seq into num_columns of length num_rows
-	from .itertools import grouper
-	result = grouper(num_rows, seq)
+	result = recipes.grouper(num_rows, seq)
 	# result is now a list of columns... transpose it to return a list
 	# of rows
 	return zip(*result)
@@ -301,47 +302,6 @@ class splitter(object):
 				yield s[lastIndex:]
 				break
 
-# From Python 3.1 docs
-def grouper(n, iterable, fillvalue=None):
-	"""
-	grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx
-
-	>>> c = grouper(3, range(11))
-	>>> tuple(c)
-	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10, None))
-
-	>>> tuple(grouper(42, []))
-	()
-
-	It doesn't quite give what you might expect for a string.
-	For that, use grouper_nofill_str.
-	>>> tuple(grouper(3, 'foobarbaz'))
-	(('f', 'o', 'o'), ('b', 'a', 'r'), ('b', 'a', 'z'))
-
-	"""
-	args = [iter(iterable)] * n
-	return six.moves.zip_longest(*args, fillvalue=fillvalue)
-
-def grouper_nofill(n, iterable):
-	"""
-	Just like grouper, but doesn't add any fill values.
-
-	>>> c = grouper_nofill(3, range(11))
-
-	c should be an iterator
-	>>> isinstance(c, collections.Iterable)
-	True
-
-	>>> tuple(c)
-	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9, 10))
-	"""
-	nofill = type(str('nofill'), (object,), dict())
-	result = grouper(n, iterable, fillvalue=nofill)
-	return (
-		tuple(value for value in item if value is not nofill)
-		for item in result
-	)
-
 def grouper_nofill_str(n, iterable):
 	"""
 	Take a sequence and break it up into chunks of the specified size.
@@ -358,9 +318,9 @@ def grouper_nofill_str(n, iterable):
 	()
 
 	>>> tuple(grouper_nofill_str(3, list(range(10))))
-	((0, 1, 2), (3, 4, 5), (6, 7, 8), (9,))
+	([0, 1, 2], [3, 4, 5], [6, 7, 8], [9])
 	"""
-	res = grouper_nofill(n, iterable)
+	res = more.chunked(iterable, n)
 	if isinstance(iterable, six.string_types):
 		res = (''.join(item) for item in res)
 	return res
