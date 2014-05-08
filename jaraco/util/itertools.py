@@ -597,6 +597,35 @@ def last(iterable):
 	except NameError:
 		raise ValueError("Iterable contains no items")
 
+def one(item):
+	"""
+	Return the first element from the iterable, but raise an exception
+	if elements remain in the iterable after the first.
+
+	>>> one(['val'])
+	'val'
+
+	>>> one(['val', 'other'])
+	Traceback (most recent call last):
+	...
+	ValueError: too many values to unpack (expected 1)
+
+	>>> one([])
+	Traceback (most recent call last):
+	...
+	ValueError: need more than 0 values to unpack
+
+	>>> numbers = itertools.count()
+	>>> one(numbers)
+	Traceback (most recent call last):
+	...
+	ValueError: too many values to unpack (expected 1)
+	>>> next(numbers)
+	2
+	"""
+	result, = item
+	return result
+
 def nwise(iter, n):
 	"""
 	Like pairwise, except returns n-tuples of adjacent items.
