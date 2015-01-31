@@ -18,6 +18,11 @@ setup_params = dict(
 	long_description=long_description,
 	url="https://bitbucket.org/jaraco/jaraco.itertools",
 	packages=setuptools.find_packages(),
+	install_requires=[
+		'six',
+		'more_itertools',
+		'inflect',
+	],
 	setup_requires=[
 		'hgtools',
 		'pytest-runner',
