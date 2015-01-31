@@ -430,8 +430,8 @@ def is_empty(iterable):
 	try:
 		next(iter(iterable))
 	except StopIteration:
-		return False
-	return True
+		return True
+	return False
 
 class Reusable(object):
 	"""
