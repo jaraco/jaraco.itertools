@@ -20,7 +20,8 @@ from more_itertools import recipes
 
 def make_rows(num_columns, seq):
 	"""
-	Make a sequence into rows of num_columns columns
+	Make a sequence into rows of num_columns columns.
+
 	>>> tuple(make_rows(2, [1, 2, 3, 4, 5]))
 	((1, 4), (2, 5), (3, None))
 	>>> tuple(make_rows(3, [1, 2, 3, 4, 5]))
@@ -159,6 +160,7 @@ class Count(object):
 	"""
 	A stop object that will count how many times it's been called and return
 	False on the N+1st call.  Useful for use with takewhile.
+
 	>>> tuple(itertools.takewhile(Count(5), range(20)))
 	(0, 1, 2, 3, 4)
 
@@ -283,7 +285,8 @@ class LessThanNConsecutiveBlanks(object):
 
 class splitter(object):
 	"""
-	object that will split a string with the given arguments for each call
+	object that will split a string with the given arguments for each call.
+
 	>>> s = splitter(',')
 	>>> list(s('hello, world, this is your, master calling'))
 	['hello', ' world', ' this is your', ' master calling']
@@ -314,6 +317,7 @@ def grouper_nofill_str(n, iterable):
 	('foo', 'bar', 'baz')
 
 	You can still use it on non-strings too if you like.
+
 	>>> tuple(grouper_nofill_str(42, []))
 	()
 
@@ -390,17 +394,22 @@ def iflatten(subject, test=None):
 				yield subelem
 
 def flatten(subject, test=None):
-	"""flatten an iterable with possible nested iterables.
+	"""
+	Flatten an iterable with possible nested iterables.
+
 	Adapted from
 	http://mail.python.org/pipermail/python-list/2003-November/233971.html
+
 	>>> flatten(['a','b',['c','d',['e','f'],'g'],'h']) == ['a','b','c','d','e','f','g','h']
 	True
 
 	Note this will normally ignore string types as iterables.
+
 	>>> flatten(['ab', 'c'])
 	['ab', 'c']
 
 	Same for bytes
+
 	>>> flatten([b'ab', b'c'])
 	[b'ab', b'c']
 	"""
@@ -514,6 +523,7 @@ def peek(iterable):
 	Get the next value from an iterable, but also return an iterable
 	that will subsequently return that value and the rest of the
 	original iterable.
+
 	>>> l = iter([1,2,3])
 	>>> val, l = peek(l)
 	>>> val
@@ -592,7 +602,6 @@ def last(iterable):
 	Traceback (most recent call last):
 	...
 	ValueError: Iterable contains no items
-
 	"""
 	for item in iterable:
 		pass
@@ -687,11 +696,13 @@ def partition_items(count, bin_size):
 
 	So if you want to partition 11 items into groups of 3, you'll want
 	three of three and one of two.
+
 	>>> partition_items(11, 3)
 	[3, 3, 3, 2]
 
 	But if you only have ten items, you'll have two groups of three and
 	two of two.
+
 	>>> partition_items(10, 3)
 	[3, 3, 2, 2]
 	"""
