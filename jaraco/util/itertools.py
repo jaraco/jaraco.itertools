@@ -205,8 +205,11 @@ class islice(object):
 	>>> tuple(islice(None).apply(range(20)))
 	(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
 
+	>>> print(islice(3, 10))
+	items 3 to 9
+
 	>>> print(islice(3, 10, 2))
-	every 2nd item from 3 to 10
+	every 2nd item from 3 to 9
 	"""
 	def __init__(self, *sliceArgs):
 		self.sliceArgs = sliceArgs
@@ -222,13 +225,16 @@ class islice(object):
 		return result
 
 	def _formatArgs(self):
-		baseOneRange = lambda a_b: '%d to %d' % (a_b[0] + 1, a_b[1])
+		slice_range = lambda a_b: '%d to %d' % (a_b[0], a_b[1] - 1)
 		if len(self.sliceArgs) == 1:
 			result = 'at most %d' % self.sliceArgs
 		if len(self.sliceArgs) == 2:
-			result = 'items %s' % baseOneRange(self.sliceArgs)
+			result = 'items %s' % slice_range(self.sliceArgs)
 		if len(self.sliceArgs) == 3:
-			result = 'every %s item from %s' % (ordinalth(self.sliceArgs[2]), baseOneRange(self.sliceArgs[0:2]))
+			result = 'every %s item from %s' % (
+				ordinalth(self.sliceArgs[2]),
+				slice_range(self.sliceArgs[0:2]),
+			)
 		return result
 
 class LessThanNBlanks(object):
