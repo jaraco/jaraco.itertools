@@ -11,14 +11,11 @@ import operator
 import itertools
 import collections
 import math
-import functools
 
 import six
 import inflect
 from more_itertools import more
 from more_itertools import recipes
-
-from .exceptions import throws_exception
 
 
 six.add_move(six.MovedAttribute('zip_longest', 'itertools', 'itertools',
@@ -430,8 +427,11 @@ def is_empty(iterable):
 	>>> is_empty(iter(range(1)))
 	False
 	"""
-	get_next = functools.partial(next, iter(iterable))
-	return throws_exception(get_next, StopIteration)
+	try:
+		next(iter(iterable))
+	except StopIteration:
+		return False
+	return True
 
 class Reusable(object):
 	"""
