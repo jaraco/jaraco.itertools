@@ -18,11 +18,6 @@ from more_itertools import more
 from more_itertools import recipes
 
 
-six.add_move(six.MovedAttribute('zip_longest', 'itertools', 'itertools',
-	new_attr='zip_longest', old_attr='izip_longest'))
-six.add_move(six.MovedAttribute('filterfalse', 'itertools', 'itertools',
-	new_attr='filterfalse', old_attr='ifilterfalse'))
-
 def make_rows(num_columns, seq):
 	"""
 	Make a sequence into rows of num_columns columns
