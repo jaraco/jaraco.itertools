@@ -198,10 +198,15 @@ class islice(object):
 	"""May be applied to an iterable to limit the number of items returned.
 	Works similarly to count, except is called only once on an iterable.
 	Functionality is identical to islice, except for __str__ and reusability.
+
 	>>> tuple(islice(5).apply(range(20)))
 	(0, 1, 2, 3, 4)
+
 	>>> tuple(islice(None).apply(range(20)))
 	(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
+
+	>>> print(islice(3, 10, 2))
+	every 2nd item from 4 to 10
 	"""
 	def __init__(self, *sliceArgs):
 		self.sliceArgs = sliceArgs
