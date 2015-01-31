@@ -2,7 +2,7 @@
 
 """
 jaraco.itertools
-Tools for working with iterables.  Complements itertools.
+Tools for working with iterables.  Complements itertools and more_itertools.
 """
 
 from __future__ import absolute_import, unicode_literals, print_function
