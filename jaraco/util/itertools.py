@@ -15,10 +15,10 @@ import math
 import functools
 
 import six
+import inflect
 from more_itertools import more
 from more_itertools import recipes
 
-from jaraco.util.numbers import ordinalth
 from .exceptions import throws_exception
 
 
@@ -231,10 +231,9 @@ class islice(object):
 		if len(self.sliceArgs) == 2:
 			result = 'items %s' % slice_range(self.sliceArgs)
 		if len(self.sliceArgs) == 3:
-			result = 'every %s item from %s' % (
-				ordinalth(self.sliceArgs[2]),
-				slice_range(self.sliceArgs[0:2]),
-			)
+			ord = inflect.engine().ordinal(self.sliceArgs[2])
+			range = slice_range(self.sliceArgs[0:2])
+			result = 'every %(ord)s item from %(range)s' % locals()
 		return result
 
 class LessThanNBlanks(object):
