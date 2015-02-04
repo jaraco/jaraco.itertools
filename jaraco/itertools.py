@@ -11,6 +11,7 @@ import operator
 import itertools
 import collections
 import math
+import warnings
 
 import six
 import inflect
@@ -360,24 +361,25 @@ class Counter(object):
 
 	>>> items = Counter(range(20))
 	>>> values = list(items)
-	>>> items.GetCount()
+	>>> items.count
 	20
 	"""
 	def __init__(self, i):
-		self.__count__ = 0
-		self.__i__ = iter(i)
+		self.count = 0
+		self._orig_iter = iter(i)
 
 	def __iter__(self):
 		return self
 
 	def __next__(self):
-		result = next(self.__i__)
-		self.__count__ += 1
+		result = next(self._orig_iter)
+		self.count += 1
 		return result
 	next = __next__
 
 	def GetCount(self):
-		return self.__count__
+		warnings.warn("Use count attribute directly", DeprecationWarning)
+		return self.count
 
 # todo, factor out caching capability
 class iterable_test(dict):
