@@ -1,0 +1,6 @@
+1.1
+===
+
+* Fixed Python 3 issues on ``Counter`` object. Added docstrings.
+* Added ``Counter.count`` attribute.
+* ``Counter.GetCount`` is now deprecated. Use ``.count`` instead.

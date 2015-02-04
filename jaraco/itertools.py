@@ -185,6 +185,8 @@ class Count(object):
 	(17, 18, 19)
 	>>> unl_c.count
 	20
+
+	If all you need is the count of items, consider :class:`Counter` instead.
 	"""
 	def __init__(self, limit):
 		self.count = 0
