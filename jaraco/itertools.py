@@ -352,7 +352,17 @@ def infiniteCall(f, *args):
 	while True:
 		yield f(*args)
 
+
 class Counter(object):
+	"""
+	Wrap an iterable in an object that stores the count of items
+	that pass through it.
+
+	>>> items = Counter(range(20))
+	>>> values = list(items)
+	>>> items.GetCount()
+	20
+	"""
 	def __init__(self, i):
 		self.__count__ = 0
 		self.__i__ = enumerate(i)
