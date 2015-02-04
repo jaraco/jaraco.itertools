@@ -172,6 +172,11 @@ class Count(object):
 	>>> unl_c = Count(None)
 	>>> inf_c = Count(float('Inf'))
 
+	Unlimited or limited by infinity are equivalent.
+
+	>>> unl_c == inf_c
+	True
+
 	An unlimited counter is useful for wrapping an iterable to get the
 	count after it's consumed.
 
@@ -195,6 +200,10 @@ class Count(object):
 			return 'at most %d' % self.limit
 		else:
 			return 'all'
+
+	def __eq__(self, other):
+		return vars(self) == vars(other)
+
 
 class islice(object):
 	"""May be applied to an iterable to limit the number of items returned.
