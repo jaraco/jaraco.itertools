@@ -1,6 +1,13 @@
 1.1
 ===
 
+* Update ``Count`` object to support comparison for equality and accept
+  None to mean explicitly Infinity. See the docs for details.
 * Fixed Python 3 issues on ``Counter`` object. Added docstrings.
 * Added ``Counter.count`` attribute.
 * ``Counter.GetCount`` is now deprecated. Use ``.count`` instead.
+
+1.0
+===
+
+Initial release based on jaraco.util 10.7.
