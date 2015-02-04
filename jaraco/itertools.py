@@ -166,20 +166,29 @@ class Count(object):
 
 	>>> print('catch', Count(5))
 	catch at most 5
+
+	It's possible to construct a Count with no limit or infinite limit.
+
+	>>> unl_c = Count(None)
+	>>> inf_c = Count(float('Inf'))
+
+	An unlimited counter is useful for wrapping an iterable to get the
+	count after it's consumed.
+
+	>>> tuple(itertools.takewhile(unl_c, range(20)))[-3:]
+	(17, 18, 19)
+	>>> unl_c.count
+	20
 	"""
 	def __init__(self, limit):
 		self.count = 0
-		self.limit = limit
+		self.limit = limit if limit is not None else float('Inf')
 
 	def __call__(self, arg):
-		if not self.limit:
-			result = True
-		else:
-			if self.count > self.limit:
-				raise ValueError("Should not call count stop more anymore.")
-			result = self.count < self.limit
+		if self.count > self.limit:
+			raise ValueError("Should not call count stop more anymore.")
 		self.count += 1
-		return result
+		return self.count <= self.limit
 
 	def __str__(self):
 		if self.limit:
