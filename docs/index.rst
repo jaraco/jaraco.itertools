@@ -1,5 +1,5 @@
 Welcome to jaraco.itertools documentation!
-========================================
+==========================================
 
 .. automodule:: jaraco.itertools
     :members:
