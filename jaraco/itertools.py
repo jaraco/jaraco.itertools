@@ -365,13 +365,14 @@ class Counter(object):
 	"""
 	def __init__(self, i):
 		self.__count__ = 0
-		self.__i__ = enumerate(i)
+		self.__i__ = iter(i)
 
-	def __iter__(self): return self
+	def __iter__(self):
+		return self
 
 	def __next__(self):
-		index, result = self.__i__.next()
-		self.__count__ = index + 1
+		result = next(self.__i__)
+		self.__count__ += 1
 		return result
 	next = __next__
 
