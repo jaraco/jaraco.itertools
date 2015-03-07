@@ -1,3 +1,9 @@
+1.3
+===
+
+* Add ``apply`` to apply a function to an iterable, but yield the
+  original items.
+
 1.1
 ===
 

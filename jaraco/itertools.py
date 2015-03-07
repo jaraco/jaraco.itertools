@@ -812,3 +812,22 @@ def suppress_exceptions(callables, *exceptions):
 			yield callable()
 		except exceptions:
 			pass
+
+def apply(func, iterable):
+	"""
+	Like 'map', invoking func on each item in the iterable,
+	except return the original item and not the return
+	value from the function.
+
+	Useful when the side-effect of the func is what's desired.
+
+	>>> res = apply(print, range(1, 4))
+	>>> list(res)
+	1
+	2
+	3
+	[1, 2, 3]
+	"""
+	for item in iterable:
+		func(item)
+		yield item
