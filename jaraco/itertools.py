@@ -831,3 +831,19 @@ def apply(func, iterable):
 	for item in iterable:
 		func(item)
 		yield item
+
+
+def list_or_single(iterable):
+    """
+    Given an iterable, return the items as a list. If the iterable contains
+    exactly one item, return that item. Correlary function to always_iterable.
+
+    >>> list_or_single(iter('abcd'))
+    ['a', 'b', 'c', 'd']
+    >>> list_or_single(['a'])
+    'a'
+    """
+    result = list(iterable)
+    if len(result) == 1:
+        result = result[0]
+    return result

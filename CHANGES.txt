@@ -1,3 +1,8 @@
+1.4
+===
+
+* Add ``list_or_single`` function.
+
 1.3
 ===
 
