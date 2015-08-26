@@ -14,6 +14,8 @@ import math
 import warnings
 
 import six
+from six.moves import queue
+
 import inflect
 from more_itertools import more
 from more_itertools import recipes
@@ -139,7 +141,7 @@ class GroupbySaved(object):
 		values.extend(iter([]) for n in range(missing))
 		return values
 
-class FetchingQueue(six.moves.queue.Queue):
+class FetchingQueue(queue.Queue):
 	"""
 	A FIFO Queue that is supplied with a function to inject more into
 	the queue if it is empty.
@@ -155,7 +157,10 @@ class FetchingQueue(six.moves.queue.Queue):
 	none).
 	"""
 	def __init__(self, fetcher):
-		super(FetchingQueue, self).__init__()
+		if six.PY3:
+			super(FetchingQueue, self).__init__()
+		else:
+			queue.Queue.__init__(self)
 		self._fetcher = fetcher
 
 	def __next__(self):
