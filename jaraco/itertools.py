@@ -605,6 +605,11 @@ class Peekable(object):
 	Traceback (most recent call last):
 	...
 	StopIteration
+
+	Peekable should accept an iterable and not just an iterator.
+
+	>>> list(Peekable(range(2)))
+	[0, 1]
 	"""
 	def __new__(cls, iterator):
 		# if the iterator is already 'peekable', return it; otherwise
@@ -615,7 +620,7 @@ class Peekable(object):
 			return object.__new__(cls)
 
 	def __init__(self, iterator):
-		self.iterator = iterator
+		self.iterator = iter(iterator)
 
 	def __iter__(self):
 		return self
@@ -634,7 +639,7 @@ def takewhile_peek(predicate, iterable):
 	Like takewhile, but takes a peekable iterable and doesn't
 	consume the non-matching item.
 
-	>>> items = Peekable(iter(range(10)))
+	>>> items = Peekable(range(10))
 	>>> is_small = lambda n: n < 4
 
 	>>> small_items = takewhile_peek(is_small, items)
