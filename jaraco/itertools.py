@@ -39,12 +39,26 @@ def make_rows(num_columns, seq):
 	# of rows
 	return zip(*result)
 
-def bisect(seq, func = bool):
+def bisect(seq, func=bool):
 	"""
 	Split a sequence into two sequences:  the first is elements that
-	return True for func(element) and the second for False ==
+	return False for func(element) and the second for True for
 	func(element).
-	By default, func = bool, so uses the truth value of the object.
+	By default, func is ``bool``, so uses the truth value of the object.
+
+	>>> is_odd = lambda n: n%2
+	>>> even, odd = bisect(range(5), is_odd)
+	>>> list(odd)
+	[1, 3]
+	>>> list(even)
+	[0, 2, 4]
+
+	>>> zeros, other = bisect(reversed(range(5)))
+	>>> list(zeros)
+	[0]
+	>>> list(other)
+	[4, 3, 2, 1]
+
 	"""
 	queues = GroupbySaved(seq, func)
 	return queues.get_first_n_queues(2)
