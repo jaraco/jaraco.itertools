@@ -609,6 +609,29 @@ class Peekable(object):
 		result, self.iterator = peek(self.iterator)
 		return result
 
+
+def takewhile_peek(predicate, iterable):
+	"""
+	Like takewhile, but takes a peekable iterable and doesn't
+	consume the non-matching item.
+
+	>>> items = Peekable(iter(range(10)))
+	>>> is_small = lambda n: n < 4
+
+	>>> small_items = takewhile_peek(is_small, items)
+
+	>>> list(small_items)
+	[0, 1, 2, 3]
+
+	>>> list(items)
+	[4, 5, 6, 7, 8, 9]
+	"""
+	while True:
+		if not predicate(iterable.peek()):
+			break
+		yield next(iterable)
+
+
 def first(iterable):
 	"""
 	Return the first item from the iterable.
