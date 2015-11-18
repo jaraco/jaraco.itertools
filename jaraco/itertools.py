@@ -706,7 +706,7 @@ def one(item):
 	>>> one([])
 	Traceback (most recent call last):
 	...
-	ValueError: need more than 0 values to unpack
+	ValueError: not enough values to unpack (expected 1, got 0)
 
 	>>> numbers = itertools.count()
 	>>> one(numbers)
