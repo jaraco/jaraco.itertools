@@ -1,6 +1,12 @@
 Welcome to jaraco.itertools documentation!
 ========================================
 
+.. toctree::
+   :maxdepth: 1
+
+   history
+
+
 .. automodule:: jaraco.itertools
     :members:
     :undoc-members:
