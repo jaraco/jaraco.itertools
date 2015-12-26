@@ -14,7 +14,7 @@ import math
 import warnings
 
 import six
-from six.moves import queue
+from six.moves import queue, xrange as range
 
 import inflect
 from more_itertools import more
@@ -788,7 +788,7 @@ def partition_items(count, bin_size):
 	"""
 	num_bins = int(math.ceil(count / float(bin_size)))
 	bins = [0] * num_bins
-	for i in six.moves.xrange(count):
+	for i in range(count):
 		bins[i % num_bins] += 1
 	return bins
 
