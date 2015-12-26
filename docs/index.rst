@@ -1,4 +1,4 @@
-Welcome to jaraco.itertools documentation!
+Welcome to skeleton documentation!
 ========================================
 
 .. toctree::
@@ -7,7 +7,7 @@ Welcome to jaraco.itertools documentation!
    history
 
 
-.. automodule:: jaraco.itertools
+.. automodule:: skeleton
     :members:
     :undoc-members:
     :show-inheritance:
