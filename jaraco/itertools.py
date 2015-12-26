@@ -701,18 +701,18 @@ def one(item):
 	>>> one(['val', 'other'])
 	Traceback (most recent call last):
 	...
-	ValueError: too many values to unpack (expected 1)
+	ValueError: ...values to unpack...
 
 	>>> one([])
 	Traceback (most recent call last):
 	...
-	ValueError: not enough values to unpack (expected 1, got 0)
+	ValueError: ...values to unpack...
 
 	>>> numbers = itertools.count()
 	>>> one(numbers)
 	Traceback (most recent call last):
 	...
-	ValueError: too many values to unpack (expected 1)
+	ValueError: ...values to unpack...
 	>>> next(numbers)
 	2
 	"""
