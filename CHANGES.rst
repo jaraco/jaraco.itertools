@@ -1,3 +1,8 @@
+1.7.1
+=====
+
+* Fix failing tests on Python 2.
+
 1.7
 ===
 
