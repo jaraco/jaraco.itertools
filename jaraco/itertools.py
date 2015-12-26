@@ -452,8 +452,8 @@ def flatten(subject, test=None):
 	Adapted from
 	http://mail.python.org/pipermail/python-list/2003-November/233971.html
 
-	>>> flatten(['a','b',['c','d',['e','f'],'g'],'h']) == ['a','b','c','d','e','f','g','h']
-	True
+	>>> flatten(['a','b',['c','d',['e','f'],'g'],'h'])
+	['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
 	Note this will normally ignore string types as iterables.
 
