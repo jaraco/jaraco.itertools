@@ -12,6 +12,7 @@ import itertools
 import collections
 import math
 import warnings
+import functools
 
 import six
 from six.moves import queue, xrange as range
@@ -369,10 +370,25 @@ def grouper_nofill_str(n, iterable):
 		res = (''.join(item) for item in res)
 	return res
 
+
+def infinite_call(f):
+	"""
+	Perpetually yield the result of calling function f.
+
+	>>> counter = itertools.count()
+	>>> get_next = functools.partial(next, counter)
+	>>> numbers = infinite_call(get_next)
+	>>> next(numbers)
+	0
+	>>> next(numbers)
+	1
+	"""
+	return (f() for _ in itertools.repeat(None))
+
+
 def infiniteCall(f, *args):
-	"Perpetually yield the result of calling function f."
-	while True:
-		yield f(*args)
+	warnings.warn("Use infinite_call")
+	return infinite_call(functools.partial(f, *args))
 
 
 class Counter(object):

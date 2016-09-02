@@ -1,3 +1,10 @@
+1.8
+===
+
+* Deprecated ``infiniteCall`` and replaced it with
+  ``infinite_call`` which only takes a single argument
+  (the function to call).
+
 1.7.1
 =====
 
