@@ -846,12 +846,21 @@ def always_iterable(item):
 	>>> def _test_func(): yield "I'm iterable"
 	>>> print(next(always_iterable(_test_func())))
 	I'm iterable
+
+	Although mappings are iterable, treat each like a singleton, as
+	it's more like an object than a sequence.
+
+	>>> always_iterable(dict(a=1))
+	({'a': 1},)
 	"""
 	if item is None:
 		item = ()
-	if isinstance(item, six.string_types) or not hasattr(item, '__iter__'):
-		item = item,
-	return item
+	singleton = (
+		isinstance(item, six.string_types)
+		or isinstance(item, collections.Mapping)
+		or not hasattr(item, '__iter__')
+	)
+	return (item,) if singleton else item
 
 def suppress_exceptions(callables, *exceptions):
 	"""

@@ -1,3 +1,12 @@
+2.0
+===
+
+* In ``always_iterable``, mappings are now considered
+  singletons. It seems that the way ``always_iterable``
+  is generally used, one wouldn't expect to only iterate
+  on a mapping, but there are cases where a dictionary
+  should behave like a singleton object.
+
 1.8
 ===
 
