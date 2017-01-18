@@ -56,7 +56,7 @@ def bisect(seq, func=bool):
 	>>> list(even)
 	[0, 2, 4]
 
-	>>> zeros, other = bisect(reversed(range(5)))
+	>>> other, zeros = bisect(reversed(range(5)))
 	>>> list(zeros)
 	[0]
 	>>> list(other)
@@ -102,7 +102,7 @@ class GroupbySaved(object):
 	def __init__(self, sequence, func = lambda x: x):
 		self.sequence = iter(sequence)
 		self.func = func
-		self.queues = dict()
+		self.queues = collections.OrderedDict()
 
 	def __getitem__(self, key):
 		try:
