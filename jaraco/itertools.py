@@ -856,9 +856,8 @@ def always_iterable(item):
 	if item is None:
 		item = ()
 	singleton = (
-		isinstance(item, six.string_types)
-		or isinstance(item, collections.Mapping)
-		or not hasattr(item, '__iter__')
+		isinstance(item, collections.Mapping)
+		or not isinstance(item, collections.Iterable)
 	)
 	return (item,) if singleton else item
 
