@@ -1,3 +1,10 @@
+2.1
+===
+
+* Use ``more_itertools.more.always_iterable`` in place
+  of ``always_iterable`` except when a mapping is
+  included.
+
 2.0.1
 =====
 

@@ -829,6 +829,7 @@ def reverse_lists(lists):
 
 	return list(map(list, map(reversed, lists)))
 
+
 def always_iterable(item):
 	"""
 	Given an object, always return an iterable. If the item is not
@@ -853,14 +854,12 @@ def always_iterable(item):
 	>>> always_iterable(dict(a=1))
 	({'a': 1},)
 	"""
-	if item is None:
-		item = ()
-	singleton = (
-		isinstance(item, six.string_types)
-		or isinstance(item, collections.Mapping)
-		or not hasattr(item, '__iter__')
+	return (
+		(item,)
+		if isinstance(item, collections.Mapping)
+		else more.always_iterable(item)
 	)
-	return (item,) if singleton else item
+
 
 def suppress_exceptions(callables, *exceptions):
 	"""
