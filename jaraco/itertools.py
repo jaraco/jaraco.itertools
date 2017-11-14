@@ -42,6 +42,7 @@ def make_rows(num_columns, seq):
 	# of rows
 	return zip(*result)
 
+
 def bisect(seq, func=bool):
 	"""
 	Split a sequence into two sequences:  the first is elements that
@@ -65,6 +66,7 @@ def bisect(seq, func=bool):
 	"""
 	queues = GroupbySaved(seq, func)
 	return queues.get_first_n_queues(2)
+
 
 class GroupbySaved(object):
 	"""
@@ -99,7 +101,8 @@ class GroupbySaved(object):
 	>>> next(ones)
 	4
 	"""
-	def __init__(self, sequence, func = lambda x: x):
+
+	def __init__(self, sequence, func=lambda x: x):
 		self.sequence = iter(sequence)
 		self.func = func
 		self.queues = collections.OrderedDict()
@@ -120,7 +123,7 @@ class GroupbySaved(object):
 	def __find_queue__(self, key):
 		"search for the queue indexed by key"
 		try:
-			while not key in self.queues:
+			while key not in self.queues:
 				self.__fetch__()
 			return self.queues[key]
 		except StopIteration:
@@ -142,6 +145,7 @@ class GroupbySaved(object):
 		values.extend(iter([]) for n in range(missing))
 		return values
 
+
 class FetchingQueue(queue.Queue):
 	"""
 	A FIFO Queue that is supplied with a function to inject more into
@@ -157,6 +161,7 @@ class FetchingQueue(queue.Queue):
 	tuple(q) just copies the elements in the list (of which there are
 	none).
 	"""
+
 	def __init__(self, fetcher):
 		if six.PY3:
 			super(FetchingQueue, self).__init__()
@@ -176,6 +181,7 @@ class FetchingQueue(queue.Queue):
 
 	def enqueue(self, item):
 		self.put_nowait(item)
+
 
 class Count(object):
 	"""
@@ -208,6 +214,7 @@ class Count(object):
 
 	If all you need is the count of items, consider :class:`Counter` instead.
 	"""
+
 	def __init__(self, limit):
 		self.count = 0
 		self.limit = limit if limit is not None else float('Inf')
@@ -245,6 +252,7 @@ class islice(object):
 	>>> print(islice(3, 10, 2))
 	every 2nd item from 3 to 9
 	"""
+
 	def __init__(self, *sliceArgs):
 		self.sliceArgs = sliceArgs
 
@@ -259,7 +267,10 @@ class islice(object):
 		return result
 
 	def _formatArgs(self):
-		slice_range = lambda a_b: '%d to %d' % (a_b[0], a_b[1] - 1)
+
+		def slice_range(a_b):
+			return '%d to %d' % (a_b[0], a_b[1] - 1)
+
 		if len(self.sliceArgs) == 1:
 			result = 'at most %d' % self.sliceArgs
 		if len(self.sliceArgs) == 2:
@@ -270,6 +281,7 @@ class islice(object):
 			result = 'every %(ord)s item from %(range)s' % locals()
 		return result
 
+
 class LessThanNBlanks(object):
 	"""
 	An object that when called will return True until n false elements
@@ -278,7 +290,8 @@ class LessThanNBlanks(object):
 	Can be used with filter or itertools.ifilter, for example:
 
 	>>> import itertools
-	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
+	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '',
+	...     'string 4', '', '', 'string 5']
 	>>> first = itertools.takewhile(LessThanNBlanks(2), sampleData)
 	>>> tuple(first)
 	('string 1', 'string 2', '', 'string 3')
@@ -286,6 +299,7 @@ class LessThanNBlanks(object):
 	>>> tuple(first)
 	('string 1', 'string 2', '', 'string 3', '', 'string 4')
 	"""
+
 	def __init__(self, nBlanks):
 		self.limit = nBlanks
 		self.count = 0
@@ -296,6 +310,7 @@ class LessThanNBlanks(object):
 			raise ValueError("Should not call this object anymore.")
 		return self.count < self.limit
 
+
 class LessThanNConsecutiveBlanks(object):
 	"""
 	An object that when called will return True until n consecutive
@@ -304,7 +319,8 @@ class LessThanNConsecutiveBlanks(object):
 	Can be used with filter or itertools.ifilter, for example:
 
 	>>> import itertools
-	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4', '', '', 'string 5']
+	>>> sampleData = ['string 1', 'string 2', '', 'string 3', '', 'string 4',
+	...     '', '', 'string 5']
 	>>> first = itertools.takewhile(LessThanNConsecutiveBlanks(2), sampleData)
 	>>> tuple(first)
 	('string 1', 'string 2', '', 'string 3', '', 'string 4', '')
@@ -324,6 +340,7 @@ class LessThanNConsecutiveBlanks(object):
 			raise ValueError("Should not call this object anymore.")
 		return self.count < self.limit
 
+
 class splitter(object):
 	"""
 	object that will split a string with the given arguments for each call.
@@ -332,7 +349,8 @@ class splitter(object):
 	>>> list(s('hello, world, this is your, master calling'))
 	['hello', ' world', ' this is your', ' master calling']
 	"""
-	def __init__(self, sep = None):
+
+	def __init__(self, sep=None):
 		self.sep = sep
 
 	def __call__(self, s):
@@ -345,6 +363,7 @@ class splitter(object):
 			else:
 				yield s[lastIndex:]
 				break
+
 
 def grouper_nofill_str(n, iterable):
 	"""
@@ -401,6 +420,7 @@ class Counter(object):
 	>>> items.count
 	20
 	"""
+
 	def __init__(self, i):
 		self.count = 0
 		self._orig_iter = iter(i)
@@ -419,6 +439,8 @@ class Counter(object):
 		return self.count
 
 # todo, factor out caching capability
+
+
 class iterable_test(dict):
 	"""
 	Test objects for iterability, caching the result by type
@@ -429,7 +451,8 @@ class iterable_test(dict):
 	>>> test[[]]
 	True
 	"""
-	def __init__(self, ignore_classes=six.string_types+(six.binary_type,)):
+
+	def __init__(self, ignore_classes=six.string_types + (six.binary_type,)):
 		"""ignore_classes must include str, because if a string
 		is iterable, so is a single character, and the routine runs
 		into an infinite recursion"""
@@ -451,6 +474,7 @@ class iterable_test(dict):
 		self[type(candidate)] = result
 		return result
 
+
 def iflatten(subject, test=None):
 	if test is None:
 		test = iterable_test()
@@ -460,6 +484,7 @@ def iflatten(subject, test=None):
 		for elem in subject:
 			for subelem in iflatten(elem, test):
 				yield subelem
+
 
 def flatten(subject, test=None):
 	"""
@@ -483,11 +508,13 @@ def flatten(subject, test=None):
 	"""
 	return list(iflatten(subject, test))
 
+
 def empty():
 	"""
 	An empty iterator.
 	"""
 	return iter(tuple())
+
 
 def is_empty(iterable):
 	"""
@@ -504,6 +531,7 @@ def is_empty(iterable):
 	except StopIteration:
 		return True
 	return False
+
 
 class Reusable(object):
 	"""
@@ -527,7 +555,8 @@ class Reusable(object):
 		self.__saved = iterable
 		self.reset()
 
-	def __iter__(self): return self
+	def __iter__(self):
+		return self
 
 	def reset(self):
 		"""
@@ -547,6 +576,7 @@ class Reusable(object):
 			raise
 	next = __next__
 
+
 def every_other(iterable):
 	"""
 	Yield every other item from the iterable
@@ -558,6 +588,7 @@ def every_other(iterable):
 	while True:
 		yield next(items)
 		next(items)
+
 
 def remove_duplicates(iterable, key=None):
 	"""
@@ -577,6 +608,7 @@ def remove_duplicates(iterable, key=None):
 			itertools.groupby(iterable, key)
 		)))
 
+
 def skip_first(iterable):
 	"""
 	Skip the first element of an iterable
@@ -585,6 +617,7 @@ def skip_first(iterable):
 	(1, 2, 3, 4, 5, 6, 7, 8, 9)
 	"""
 	return itertools.islice(iterable, 1, None)
+
 
 def peek(iterable):
 	"""
@@ -601,6 +634,7 @@ def peek(iterable):
 	"""
 	peeker, original = itertools.tee(iterable)
 	return next(peeker), original
+
 
 class Peekable(object):
 	"""
@@ -688,6 +722,7 @@ def first(iterable):
 	iterable = iter(iterable)
 	return next(iterable)
 
+
 def last(iterable):
 	"""
 	Return the last item from the iterable, discarding the rest.
@@ -705,6 +740,7 @@ def last(iterable):
 		return item
 	except NameError:
 		raise ValueError("Iterable contains no items")
+
 
 def one(item):
 	"""
@@ -735,6 +771,7 @@ def one(item):
 	result, = item
 	return result
 
+
 def nwise(iter, n):
 	"""
 	Like pairwise, except returns n-tuples of adjacent items.
@@ -745,6 +782,7 @@ def nwise(iter, n):
 		iterset[-1:] = itertools.tee(iterset[-1])
 		next(iterset[-1], None)
 	return six.moves.zip(*iterset)
+
 
 def window(iter, pre_size=1, post_size=1):
 	"""
@@ -773,6 +811,7 @@ def window(iter, pre_size=1, post_size=1):
 	next(post_iter, None)
 	return six.moves.zip(pre_iter, iter, post_iter)
 
+
 class IterSaver(object):
 	def __init__(self, n, iterable):
 		self.n = n
@@ -784,6 +823,7 @@ class IterSaver(object):
 			self.buffer.append(next(self.iterable))
 		return self.buffer.popleft()
 	next = __next__
+
 
 def partition_items(count, bin_size):
 	"""
@@ -808,6 +848,7 @@ def partition_items(count, bin_size):
 		bins[i % num_bins] += 1
 	return bins
 
+
 def balanced_rows(n, iterable, fillvalue=None):
 	"""
 	Like grouper, but balance the rows to minimize fill per row.
@@ -820,6 +861,7 @@ def balanced_rows(n, iterable, fillvalue=None):
 		if allocation < n:
 			row = itertools.chain(row, [fillvalue])
 		yield tuple(row)
+
 
 def reverse_lists(lists):
 	"""
@@ -884,6 +926,7 @@ def suppress_exceptions(callables, *exceptions):
 		except exceptions:
 			pass
 
+
 def apply(func, iterable):
 	"""
 	Like 'map', invoking func on each item in the iterable,
@@ -905,16 +948,16 @@ def apply(func, iterable):
 
 
 def list_or_single(iterable):
-    """
-    Given an iterable, return the items as a list. If the iterable contains
-    exactly one item, return that item. Correlary function to always_iterable.
+	"""
+	Given an iterable, return the items as a list. If the iterable contains
+	exactly one item, return that item. Correlary function to always_iterable.
 
-    >>> list_or_single(iter('abcd'))
-    ['a', 'b', 'c', 'd']
-    >>> list_or_single(['a'])
-    'a'
-    """
-    result = list(iterable)
-    if len(result) == 1:
-        result = result[0]
-    return result
+	>>> list_or_single(iter('abcd'))
+	['a', 'b', 'c', 'd']
+	>>> list_or_single(['a'])
+	'a'
+	"""
+	result = list(iterable)
+	if len(result) == 1:
+		result = result[0]
+	return result
