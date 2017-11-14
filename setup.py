@@ -11,7 +11,7 @@ with io.open('README.rst', encoding='utf-8') as readme:
 
 name = 'jaraco.itertools'
 description = ''
-nspkg_technique = 'native'
+nspkg_technique = 'managed'
 """
 Does this package use "native" namespace packages or
 pkg_resources "managed" namespace packages?
