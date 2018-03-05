@@ -177,7 +177,10 @@ class FetchingQueue(queue.Queue):
 
 	def __iter__(self):
 		while True:
-			yield next(self)
+			try:
+				yield next(self)
+			except StopIteration:
+				return
 
 	def enqueue(self, item):
 		self.put_nowait(item)
@@ -586,8 +589,11 @@ def every_other(iterable):
 	"""
 	items = iter(iterable)
 	while True:
-		yield next(items)
-		next(items)
+		try:
+			yield next(items)
+			next(items)
+		except StopIteration:
+			return
 
 
 def remove_duplicates(iterable, key=None):

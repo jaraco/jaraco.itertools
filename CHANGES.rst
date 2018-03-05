@@ -1,3 +1,9 @@
+2.1.1
+=====
+
+* #3: Fix failures on Python 3.7 due to the introduction of
+  PEP 479.
+
 2.1
 ===
 
