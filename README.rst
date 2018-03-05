@@ -3,7 +3,11 @@
 
 .. image:: https://img.shields.io/pypi/pyversions/jaraco.itertools.svg
 
-.. image:: https://img.shields.io/pypi/dm/jaraco.itertools.svg
-
 .. image:: https://img.shields.io/travis/jaraco/jaraco.itertools/master.svg
-   :target: http://travis-ci.org/jaraco/jaraco.itertools
+   :target: https://travis-ci.org/jaraco/jaraco.itertools
+
+.. .. image:: https://img.shields.io/appveyor/ci/jaraco/jaraco.itertools/master.svg
+..    :target: https://ci.appveyor.com/project/jaraco/jaraco.itertools/branch/master
+
+.. image:: https://readthedocs.org/projects/jaracoitertools/badge/?version=latest
+   :target: https://jaracoitertools.readthedocs.io/en/latest/?badge=latest
