@@ -879,13 +879,13 @@ def always_iterable(item):
 	None, an empty iterable is returned.
 
 	>>> always_iterable([1,2,3])
-	[1, 2, 3]
+	<list_iterator...>
 	>>> always_iterable('foo')
-	('foo',)
+	<tuple_iterator...>
 	>>> always_iterable(None)
-	()
+	<tuple_iterator...>
 	>>> always_iterable(range(10))
-	range(0, 10)
+	<range_iterator...>
 	>>> def _test_func(): yield "I'm iterable"
 	>>> print(next(always_iterable(_test_func())))
 	I'm iterable
