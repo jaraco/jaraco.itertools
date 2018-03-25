@@ -712,7 +712,7 @@ def takewhile_peek(predicate, iterable):
 		yield next(iterable)
 
 
-def first(iterable):
+def first(iterable, *args):
 	"""
 	Return the first item from the iterable.
 
@@ -724,9 +724,20 @@ def first(iterable):
 	>>> first(iter)
 	0
 
+	Raises StopIteration if no value is present.
+
+	>>> first([])
+	Traceback (most recent call last):
+	...
+	StopIteration
+
+	Pass a default to be used when iterable is empty.
+
+	>>> first([], None)
+
 	"""
 	iterable = iter(iterable)
-	return next(iterable)
+	return next(iterable, *args)
 
 
 def last(iterable):

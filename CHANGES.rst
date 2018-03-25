@@ -1,3 +1,8 @@
+2.2
+===
+
+* ``first`` now accepts a default value, same as ``next``.
+
 2.1.1
 =====
 
