@@ -1,3 +1,8 @@
+2.3
+===
+
+* Added ``self_product``.
+
 2.2
 ===
 

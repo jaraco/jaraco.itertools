@@ -978,3 +978,13 @@ def list_or_single(iterable):
 	if len(result) == 1:
 		result = result[0]
 	return result
+
+
+def self_product(iterable):
+	"""
+	Return the cross product of the iterable with itself.
+
+	>>> list(self_product([1, 2, 3]))
+	[(1, 1), (1, 2), ..., (3, 3)]
+	"""
+	return itertools.product(*itertools.tee(iterable))
