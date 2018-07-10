@@ -10,7 +10,6 @@ def remove_PY2_broken_tests(items):
 		return
 	broken_test_names = [
 		'jaraco.itertools.always_iterable',
-		'jaraco.itertools.flatten',
 	]
 	items[:] = (
 		item
