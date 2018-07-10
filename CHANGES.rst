@@ -5,6 +5,8 @@
   ``more_itertools.collapse``. Deprecated
   ``iterable_test``, only used by deprecated functions.
 
+* Bump dependency on more_itertools 4.0.0.
+
 2.3
 ===
 

@@ -27,6 +27,10 @@ link_files = {
 				pattern=r'PEP[- ](?P<pep_number>\d+)',
 				url='https://www.python.org/dev/peps/pep-{pep_number:0>4}/',
 			),
+			dict(
+				pattern=r'more_itertools (?P<more_itertools_ver>[0-9.]+)',
+				url='https://more-itertools.readthedocs.io/en/latest/versions.html',
+			),
 		],
 	),
 }
