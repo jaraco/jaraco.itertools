@@ -446,6 +446,8 @@ class Counter(object):
 
 class iterable_test(dict):
 	"""
+	*Deprecated*
+
 	Test objects for iterability, caching the result by type
 
 	>>> test = iterable_test()
@@ -459,6 +461,7 @@ class iterable_test(dict):
 		"""ignore_classes must include str, because if a string
 		is iterable, so is a single character, and the routine runs
 		into an infinite recursion"""
+		warnings.warn("Slated for removal", DeprecationWarning)
 		assert set(six.string_types) <= set(ignore_classes), (
 			'str must be in ignore_classes')
 		self.ignore_classes = ignore_classes
@@ -491,6 +494,8 @@ def iflatten(subject, test=None):
 
 def flatten(subject, test=None):
 	"""
+	*Deprecated*: Use more_itertools.collapse instead.
+
 	Flatten an iterable with possible nested iterables.
 
 	Adapted from
@@ -509,7 +514,8 @@ def flatten(subject, test=None):
 	>>> flatten([b'ab', b'c'])
 	[b'ab', b'c']
 	"""
-	return list(iflatten(subject, test))
+	warnings.warn("Use more_itertools.collapse instead", DeprecationWarning)
+	return list(more.collapse(subject, base_type=(bytes,)))
 
 
 def empty():

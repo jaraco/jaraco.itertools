@@ -1,3 +1,10 @@
+2.4
+===
+
+* Deprecated ``flatten`` and ``iflatten`` in favor of
+  ``more_itertools.collapse``. Deprecated
+  ``iterable_test``, only used by deprecated functions.
+
 2.3
 ===
 
