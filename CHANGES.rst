@@ -1,3 +1,10 @@
+2.5
+===
+
+* Added new ``maybe_single`` function.
+* Deprecated ``list_or_iterable`` in favor of
+  ``maybe_single``.
+
 2.4
 ===
 

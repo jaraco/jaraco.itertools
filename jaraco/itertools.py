@@ -980,9 +980,26 @@ def list_or_single(iterable):
 	>>> list_or_single(['a'])
 	'a'
 	"""
-	result = list(iterable)
-	if len(result) == 1:
-		result = result[0]
+	warnings.warn("Use maybe_single", DeprecationWarning)
+	return maybe_single(iterable, sequence=list)
+
+
+def maybe_single(iterable, sequence=tuple):
+	"""
+	Given an iterable, return the items as a sequence.
+	If the iterable contains exactly one item, return
+	that item. Correlary function to always_iterable.
+
+	>>> maybe_single(iter('abcd'))
+	('a', 'b', 'c', 'd')
+	>>> maybe_single(['a'])
+	'a'
+	"""
+	result = sequence(iterable)
+	try:
+		result, = result
+	except ValueError:
+		pass
 	return result
 
 
