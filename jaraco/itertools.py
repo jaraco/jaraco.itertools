@@ -14,6 +14,11 @@ import math
 import warnings
 import functools
 
+try:
+	import collections.abc
+except ImportError:
+	collections.abc = collections
+
 import six
 from six.moves import queue, xrange as range
 
@@ -927,7 +932,7 @@ def always_iterable(item):
 	"""
 	return (
 		(item,)
-		if isinstance(item, collections.Mapping)
+		if isinstance(item, collections.abc.Mapping)
 		else more.always_iterable(item)
 	)
 
