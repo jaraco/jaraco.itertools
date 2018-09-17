@@ -927,14 +927,11 @@ def always_iterable(item):
 	Although mappings are iterable, treat each like a singleton, as
 	it's more like an object than a sequence.
 
-	>>> always_iterable(dict(a=1))
-	({'a': 1},)
+	>>> next(always_iterable(dict(a=1)))
+	{'a': 1}
 	"""
-	return (
-		(item,)
-		if isinstance(item, collections.abc.Mapping)
-		else more.always_iterable(item)
-	)
+	base_types = six.text_type, bytes, collections.abc.Mapping
+	return more.always_iterable(item, base_type=base_types)
 
 
 def suppress_exceptions(callables, *exceptions):
