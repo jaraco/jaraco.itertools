@@ -1,3 +1,10 @@
+2.5.2
+=====
+
+* Fix deprecation warning in ``always_iterable``.
+* Leverage base_type parameter in
+  ``more_itertools.always_iterable``.
+
 2.5.1
 =====
 
