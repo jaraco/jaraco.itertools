@@ -1,3 +1,9 @@
+2.5.1
+=====
+
+* Set stacklevel in deprecated functions for better
+  visibility of the call.
+
 2.5
 ===
 

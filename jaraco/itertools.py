@@ -438,7 +438,9 @@ class Counter(object):
 	next = __next__
 
 	def GetCount(self):
-		warnings.warn("Use count attribute directly", DeprecationWarning)
+		warnings.warn(
+			"Use count attribute directly", DeprecationWarning,
+			stacklevel=2)
 		return self.count
 
 # todo, factor out caching capability
@@ -461,7 +463,8 @@ class iterable_test(dict):
 		"""ignore_classes must include str, because if a string
 		is iterable, so is a single character, and the routine runs
 		into an infinite recursion"""
-		warnings.warn("Slated for removal", DeprecationWarning)
+		warnings.warn(
+			"Slated for removal", DeprecationWarning, stacklevel=2)
 		assert set(six.string_types) <= set(ignore_classes), (
 			'str must be in ignore_classes')
 		self.ignore_classes = ignore_classes
@@ -514,7 +517,10 @@ def flatten(subject, test=None):
 	>>> flatten([b'ab', b'c'])
 	[b'ab', b'c']
 	"""
-	warnings.warn("Use more_itertools.collapse instead", DeprecationWarning)
+	warnings.warn(
+		"Use more_itertools.collapse instead",
+		DeprecationWarning,
+		stacklevel=2)
 	return list(more.collapse(subject, base_type=(bytes,)))
 
 
@@ -980,7 +986,7 @@ def list_or_single(iterable):
 	>>> list_or_single(['a'])
 	'a'
 	"""
-	warnings.warn("Use maybe_single", DeprecationWarning)
+	warnings.warn("Use maybe_single", DeprecationWarning, stacklevel=2)
 	return maybe_single(list(iterable))
 
 
