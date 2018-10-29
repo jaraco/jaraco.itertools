@@ -1,3 +1,10 @@
+3.0.0
+=====
+
+* Refreshed project metadata, now built using declarative
+  config. Installation from sdist now requries setuptools
+  34.4.
+
 2.5.2
 =====
 
