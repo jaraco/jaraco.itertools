@@ -452,18 +452,6 @@ class Counter(object):
 
 
 class iterable_test(dict):
-	"""
-	*Deprecated*
-
-	Test objects for iterability, caching the result by type
-
-	>>> test = iterable_test()
-	>>> test['foo']
-	False
-	>>> test[[]]
-	True
-	"""
-
 	def __init__(self, ignore_classes=six.string_types + (six.binary_type,)):
 		"""ignore_classes must include str, because if a string
 		is iterable, so is a single character, and the routine runs
@@ -503,24 +491,6 @@ def iflatten(subject, test=None):
 def flatten(subject, test=None):
 	"""
 	*Deprecated*: Use more_itertools.collapse instead.
-
-	Flatten an iterable with possible nested iterables.
-
-	Adapted from
-	http://mail.python.org/pipermail/python-list/2003-November/233971.html
-
-	>>> flatten(['a','b',['c','d',['e','f'],'g'],'h'])
-	['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-
-	Note this will normally ignore string types as iterables.
-
-	>>> flatten(['ab', 'c'])
-	['ab', 'c']
-
-	Same for bytes
-
-	>>> flatten([b'ab', b'c'])
-	[b'ab', b'c']
 	"""
 	warnings.warn(
 		"Use more_itertools.collapse instead",
@@ -982,11 +952,6 @@ def list_or_single(iterable):
 	"""
 	Given an iterable, return the items as a list. If the iterable contains
 	exactly one item, return that item. Correlary function to always_iterable.
-
-	>>> list_or_single(iter('abcd'))
-	['a', 'b', 'c', 'd']
-	>>> list_or_single(['a'])
-	'a'
 	"""
 	warnings.warn("Use maybe_single", DeprecationWarning, stacklevel=2)
 	return maybe_single(list(iterable))
