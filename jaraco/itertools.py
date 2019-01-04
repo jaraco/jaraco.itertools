@@ -23,6 +23,7 @@ import six
 from six.moves import queue, xrange as range
 
 import inflect
+import more_itertools
 from more_itertools import more
 from more_itertools import recipes
 
@@ -983,3 +984,46 @@ def self_product(iterable):
 	[(1, 1), (1, 2), ..., (3, 3)]
 	"""
 	return itertools.product(*itertools.tee(iterable))
+
+
+def duplicates(items_a, items_b, key=lambda x: x):
+	"""
+	Yield duplicate items from two sorted iterables of items
+
+	>>> items_a = [1, 2, 3]
+	>>> items_b = [0, 3, 4, 5, 6]
+	>>> list(duplicates(items_a, items_b))
+	[(3, 3)]
+
+	It won't behave as you expect if the iterables aren't ordered
+
+	>>> items_b.append(1)
+	>>> list(duplicates(items_a, items_b))
+	[(3, 3)]
+	>>> list(duplicates(items_a, sorted(items_b)))
+	[(1, 1), (3, 3)]
+
+	This function is most interesting when it's operating on a key
+	of more complex objects.
+
+	>>> items_a = [dict(email='joe@example.com', id=1)]
+	>>> items_b = [dict(email='joe@example.com', id=2), dict(email='other')]
+	>>> dupe, = duplicates(items_a, items_b, key=operator.itemgetter('email'))
+	>>> dupe[0]['email'] == dupe[1]['email'] == 'joe@example.com'
+	True
+	>>> dupe[0]['id']
+	1
+	>>> dupe[1]['id']
+	2
+	"""
+
+	zipped = more_itertools.collate(items_a, items_b, key=key)
+	grouped = itertools.groupby(zipped, key=key)
+	groups = (
+		tuple(g)
+		for k, g in grouped
+	)
+
+	def has_dupes(group):
+		return len(group) > 1
+	return filter(has_dupes, groups)

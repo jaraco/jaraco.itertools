@@ -1,3 +1,8 @@
+4.1
+===
+
+Added ``duplicates`` function.
+
 4.0.0
 =====
 
