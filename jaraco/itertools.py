@@ -24,8 +24,6 @@ from six.moves import queue, xrange as range
 
 import inflect
 import more_itertools
-from more_itertools import more
-from more_itertools import recipes
 
 
 def make_rows(num_columns, seq):
@@ -43,7 +41,7 @@ def make_rows(num_columns, seq):
 	if partial:
 		num_rows += 1
 	# break the seq into num_columns of length num_rows
-	result = recipes.grouper(num_rows, seq)
+	result = more_itertools.grouper(num_rows, seq)
 	# result is now a list of columns... transpose it to return a list
 	# of rows
 	return zip(*result)
@@ -393,7 +391,7 @@ def grouper_nofill_str(n, iterable):
 	>>> tuple(grouper_nofill_str(3, list(range(10))))
 	([0, 1, 2], [3, 4, 5], [6, 7, 8], [9])
 	"""
-	res = more.chunked(iterable, n)
+	res = more_itertools.chunked(iterable, n)
 	if isinstance(iterable, six.string_types):
 		res = (''.join(item) for item in res)
 	return res
@@ -497,7 +495,7 @@ def flatten(subject, test=None):
 		"Use more_itertools.collapse instead",
 		DeprecationWarning,
 		stacklevel=2)
-	return list(more.collapse(subject, base_type=(bytes,)))
+	return list(more_itertools.collapse(subject, base_type=(bytes,)))
 
 
 def empty():
@@ -902,7 +900,7 @@ def always_iterable(item):
 	{'a': 1}
 	"""
 	base_types = six.text_type, bytes, collections.abc.Mapping
-	return more.always_iterable(item, base_type=base_types)
+	return more_itertools.always_iterable(item, base_type=base_types)
 
 
 def suppress_exceptions(callables, *exceptions):
