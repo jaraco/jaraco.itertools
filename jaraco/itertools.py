@@ -984,7 +984,7 @@ def self_product(iterable):
 	return itertools.product(*itertools.tee(iterable))
 
 
-def duplicates(*iterables, key=lambda x: x):
+def duplicates(*iterables, **kwargs):
 	"""
 	Yield duplicate items from any number of sorted iterables of items
 
@@ -1014,7 +1014,8 @@ def duplicates(*iterables, key=lambda x: x):
 	>>> dupe[1]['id']
 	2
 	"""
-
+	key = kwargs.pop('key', lambda x: x)
+	assert not kwargs
 	zipped = more_itertools.collate(*iterables, key=key)
 	grouped = itertools.groupby(zipped, key=key)
 	groups = (
