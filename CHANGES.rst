@@ -1,3 +1,8 @@
+4.2
+===
+
+The ``duplicates`` function now takes an arbitrary number of iterables.
+
 4.1
 ===
 
