@@ -3,6 +3,8 @@
 
 The ``duplicates`` function now takes an arbitrary number of iterables.
 
+Added ``assert_ordered`` function.
+
 4.1
 ===
 

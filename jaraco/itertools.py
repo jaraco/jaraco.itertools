@@ -1026,3 +1026,23 @@ def duplicates(*iterables, **kwargs):
 	def has_dupes(group):
 		return len(group) > 1
 	return filter(has_dupes, groups)
+
+
+def assert_ordered(iterable, key=lambda x: x, comp=operator.le):
+	"""
+	Assert that for all items in the iterable, they're in order based on comp
+
+	>>> list(assert_ordered(range(5)))
+	[0, 1, 2, 3, 4]
+	>>> list(assert_ordered(range(5), comp=operator.gt))
+	Traceback (most recent call last):
+	...
+	AssertionError: not <built-in function gt> (0, 1)
+	>>> list(assert_ordered(range(5, 0, -1), key=operator.neg))
+	[5, 4, 3, 2, 1]
+	"""
+	for pair in more_itertools.pairwise(iterable):
+		keyed = tuple(map(key, pair))
+		assert comp(*keyed), "not {comp} {keyed}".format(**locals())
+		yield pair[0]
+	yield pair[1]
