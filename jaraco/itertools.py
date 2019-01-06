@@ -1034,15 +1034,20 @@ def assert_ordered(iterable, key=lambda x: x, comp=operator.le):
 
 	>>> list(assert_ordered(range(5)))
 	[0, 1, 2, 3, 4]
-	>>> list(assert_ordered(range(5), comp=operator.gt))
+	>>> list(assert_ordered(range(5), comp=operator.ge))
 	Traceback (most recent call last):
 	...
-	AssertionError: not <built-in function gt> (0, 1)
+	AssertionError: 0 < 1
 	>>> list(assert_ordered(range(5, 0, -1), key=operator.neg))
 	[5, 4, 3, 2, 1]
 	"""
+	err_tmpl = (
+		"{pair[0]} > {pair[1]}" if comp is operator.le else
+		"{pair[0]} < {pair[1]}" if comp is operator.ge else
+		"not {comp} {pair}"
+	)
 	for pair in more_itertools.pairwise(iterable):
 		keyed = tuple(map(key, pair))
-		assert comp(*keyed), "not {comp} {keyed}".format(**locals())
+		assert comp(*keyed), err_tmpl.format(**locals())
 		yield pair[0]
 	yield pair[1]

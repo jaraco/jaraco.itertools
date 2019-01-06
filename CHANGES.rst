@@ -1,3 +1,11 @@
+4.3
+===
+
+Nicer error message in ``assert_ordered`` when the assertion
+fails. Now reports the full supplied items and not just the keys
+in the errors. When ``<`` or ``>`` are used, the error message
+renders more directly.
+
 4.2
 ===
 
