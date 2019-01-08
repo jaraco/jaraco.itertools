@@ -1,3 +1,8 @@
+4.4
+===
+
+Add ``collate_revs`` and ``partition_dict``.
+
 4.3
 ===
 

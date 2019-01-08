@@ -1051,3 +1051,164 @@ def assert_ordered(iterable, key=lambda x: x, comp=operator.le):
 		assert comp(*keyed), err_tmpl.format(**locals())
 		yield pair[0]
 	yield pair[1]
+
+
+def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
+	"""
+	Given revision sets old and new, each containing a series
+	of revisions of some set of objects, collate them based on
+	these rules:
+
+	- all items from each set are yielded in stable order
+	- items in old are yielded first
+	- items in new are yielded last
+	- items that match are yielded in the order in which they
+	appear, giving preference to new
+
+	Items match based on the 'key' parameter (identity by default).
+
+	Items are merged using the 'merge' function, which accepts the old
+	and new items to be merged (returning new by default).
+
+	This algorithm requires fully materializing both old and new in memory.
+
+	>>> rev1 = ['a', 'b', 'c']
+	>>> rev2 = ['a', 'd', 'c']
+	>>> result = list(collate_revs(rev1, rev2))
+
+	'd' must appear before 'c'
+	>>> result.index('d') < result.index('c')
+	True
+
+	'b' must appear before 'd' because it came chronologically
+	first.
+	>>> result.index('b') < result.index('d')
+	True
+
+	>>> result
+	['a', 'b', 'd', 'c']
+
+	>>> list(collate_revs(['a', 'b', 'c'], ['d']))
+	['a', 'b', 'c', 'd']
+
+	>>> list(collate_revs(['b', 'a'], ['a', 'b']))
+	['a', 'b']
+
+	>>> list(collate_revs(['a', 'c'], ['a', 'b', 'c']))
+	['a', 'b', 'c']
+
+	Given two sequences of things out of order, regardless
+	of which order in which the items are merged, all
+	keys should always be merged.
+
+	>>> from more_itertools import consume
+	>>> left_items = ['a', 'b', 'c']
+	>>> right_items = ['a', 'c', 'b']
+	>>> consume(collate_revs(left_items, right_items, merge=print))
+	a a
+	c c
+	b b
+	>>> consume(collate_revs(right_items, left_items, merge=print))
+	a a
+	b b
+	c c
+	"""
+	def maybe_merge(*items):
+		"""
+		Merge any non-null items
+		"""
+		return functools.reduce(merge, filter(None, items))
+
+	new_items = collections.OrderedDict(
+		(key(el), el)
+		for el in new
+	)
+	old_items = collections.OrderedDict(
+		(key(el), el)
+		for el in old
+	)
+
+	# use the old_items as a reference
+	for old_key, old_item in _mutable_iter(old_items):
+		if old_key not in new_items:
+			yield old_item
+			continue
+
+		# yield all new items that appear before the matching key
+		before, match_new, new_items = _swap_on_miss(
+			partition_dict(new_items, old_key))
+		for new_key, new_item in before.items():
+			# ensure any new keys are merged with previous items if
+			# they exist
+			yield maybe_merge(new_item, old_items.pop(new_key, None))
+		yield merge(old_item, match_new)
+
+	# finally, yield whatever is leftover
+	# yield from new_items.values()
+	for item in new_items.values():
+		yield item
+
+
+def _mutable_iter(dict):
+	"""
+	Iterate over items in the dict, yielding the first one, but allowing
+	it to be mutated during the process.
+	>>> d = dict(a=1)
+	>>> it = _mutable_iter(d)
+	>>> next(it)
+	('a', 1)
+	>>> d
+	{}
+	>>> d.update(b=2)
+	>>> list(it)
+	[('b', 2)]
+	"""
+	while dict:
+		prev_key = next(iter(dict))
+		yield prev_key, dict.pop(prev_key)
+
+
+def _swap_on_miss(partition_result):
+	"""
+	Given a partition_dict result, if the partition missed, swap
+	the before and after.
+	"""
+	before, item, after = partition_result
+	return (before, item, after) if item else (after, item, before)
+
+
+def partition_dict(items, key):
+	"""
+	Given an ordered dictionary of items and a key in that dict,
+	return an ordered dict of items before, the keyed item, and
+	an ordered dict of items after.
+
+	>>> od = collections.OrderedDict(zip(range(5), 'abcde'))
+	>>> before, item, after = partition_dict(od, 3)
+	>>> before
+	OrderedDict([(0, 'a'), (1, 'b'), (2, 'c')])
+	>>> item
+	'd'
+	>>> after
+	OrderedDict([(4, 'e')])
+
+	Like string.partition, if the key is not found in the items,
+	the before will contain all items, item will be None, and
+	after will be an empty iterable.
+
+	>>> before, item, after = partition_dict(od, -1)
+	>>> before
+	OrderedDict([(0, 'a'), ..., (4, 'e')])
+	>>> item
+	>>> list(after)
+	[]
+	"""
+	def unmatched(pair):
+		test_key, item, = pair
+		return test_key != key
+
+	items_iter = iter(items.items())
+	item = items.get(key)
+	left = collections.OrderedDict(itertools.takewhile(unmatched, items_iter))
+	right = collections.OrderedDict(items_iter)
+	return left, item, right
