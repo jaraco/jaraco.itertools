@@ -1112,12 +1112,25 @@ def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
 	a a
 	b b
 	c c
+
+	The merge should not suppress non-True items:
+
+	>>> consume(collate_revs([0, 1, 2, None, ''], [0, None, ''], merge=print))
+	None None
+	<BLANKLINE>
+	0 0
+
 	"""
+	missing = object()
+
 	def maybe_merge(*items):
 		"""
 		Merge any non-null items
 		"""
-		return functools.reduce(merge, filter(None, items))
+		def not_missing(ob):
+			return ob is not missing
+
+		return functools.reduce(merge, filter(not_missing, items))
 
 	new_items = collections.OrderedDict(
 		(key(el), el)
@@ -1140,7 +1153,7 @@ def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
 		for new_key, new_item in before.items():
 			# ensure any new keys are merged with previous items if
 			# they exist
-			yield maybe_merge(new_item, old_items.pop(new_key, None))
+			yield maybe_merge(new_item, old_items.pop(new_key, missing))
 		yield merge(old_item, match_new)
 
 	# finally, yield whatever is leftover

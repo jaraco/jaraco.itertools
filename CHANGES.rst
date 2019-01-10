@@ -1,3 +1,9 @@
+4.4.1
+=====
+
+Fixed issue in ``collate_revs`` when objects being merged were
+non-True.
+
 4.4
 ===
 
