@@ -1,3 +1,9 @@
+4.4.2
+=====
+
+Fixed RuntimeError in takewhile_peek on later Pythons where
+StopIteration is no longer allowed in a generator.
+
 4.4.1
 =====
 
