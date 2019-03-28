@@ -711,9 +711,12 @@ def takewhile_peek(predicate, iterable):
 	[4]
 	"""
 	while True:
-		if not predicate(iterable.peek()):
+		try:
+			if not predicate(iterable.peek()):
+				break
+			yield next(iterable)
+		except StopIteration:
 			break
-		yield next(iterable)
 
 
 def first(iterable, *args):
