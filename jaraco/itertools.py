@@ -41,7 +41,11 @@ def make_rows(num_columns, seq):
 	if partial:
 		num_rows += 1
 	# break the seq into num_columns of length num_rows
-	result = more_itertools.grouper(num_rows, seq)
+	try:
+		result = more_itertools.grouper(seq, num_rows)
+	except TypeError:
+		# more_itertools before 6.x
+		result = more_itertools.grouper(num_rows, seq)
 	# result is now a list of columns... transpose it to return a list
 	# of rows
 	return zip(*result)
