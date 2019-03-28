@@ -691,6 +691,10 @@ def takewhile_peek(predicate, iterable):
 
 	>>> list(items)
 	[4, 5, 6, 7, 8, 9]
+
+	>>> empty = takewhile_peek(is_small, Peekable([]))
+	>>> list(empty)
+	[]
 	"""
 	while True:
 		if not predicate(iterable.peek()):
