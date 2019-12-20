@@ -13,6 +13,7 @@ import collections
 import math
 import warnings
 import functools
+import heapq
 
 try:
     import collections.abc
@@ -1033,7 +1034,7 @@ def duplicates(*iterables, **kwargs):
     """
     key = kwargs.pop('key', lambda x: x)
     assert not kwargs
-    zipped = more_itertools.collate(*iterables, key=key)
+    zipped = heapq.merge(*iterables, key=key)
     grouped = itertools.groupby(zipped, key=key)
     groups = (tuple(g) for k, g in grouped)
 
