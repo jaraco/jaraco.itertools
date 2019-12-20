@@ -1,7 +1,9 @@
-v4.5.0
+v5.0.0
 ======
 
 ``infinite_call`` is superseded by ``more_itertools.repeatfunc``.
+
+Require Python 3.6 or later.
 
 4.4.2
 =====
