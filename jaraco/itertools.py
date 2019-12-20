@@ -401,19 +401,7 @@ def grouper_nofill_str(n, iterable):
 	return res
 
 
-def infinite_call(f):
-	"""
-	Perpetually yield the result of calling function f.
-
-	>>> counter = itertools.count()
-	>>> get_next = functools.partial(next, counter)
-	>>> numbers = infinite_call(get_next)
-	>>> next(numbers)
-	0
-	>>> next(numbers)
-	1
-	"""
-	return (f() for _ in itertools.repeat(None))
+infinite_call = more_itertools.repeatfunc
 
 
 def infiniteCall(f, *args):

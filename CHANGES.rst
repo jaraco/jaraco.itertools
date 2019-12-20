@@ -1,3 +1,8 @@
+v4.5.0
+======
+
+``infinite_call`` is superseded by ``more_itertools.repeatfunc``.
+
 4.4.2
 =====
 
