@@ -5,8 +5,6 @@ jaraco.itertools
 Tools for working with iterables.  Complements itertools and more_itertools.
 """
 
-from __future__ import absolute_import, unicode_literals, print_function
-
 import operator
 import itertools
 import collections
@@ -14,14 +12,8 @@ import math
 import warnings
 import functools
 import heapq
-
-try:
-    import collections.abc
-except ImportError:
-    collections.abc = collections
-
-import six
-from six.moves import queue, xrange as range
+import collections.abc
+import queue
 
 import inflect
 import more_itertools
@@ -172,10 +164,7 @@ class FetchingQueue(queue.Queue):
     """
 
     def __init__(self, fetcher):
-        if six.PY3:
-            super(FetchingQueue, self).__init__()
-        else:
-            queue.Queue.__init__(self)
+        super().__init__()
         self._fetcher = fetcher
 
     def __next__(self):
@@ -397,7 +386,7 @@ def grouper_nofill_str(n, iterable):
     ([0, 1, 2], [3, 4, 5], [6, 7, 8], [9])
     """
     res = more_itertools.chunked(iterable, n)
-    if isinstance(iterable, six.string_types):
+    if isinstance(iterable, str):
         res = (''.join(item) for item in res)
     return res
 
@@ -444,14 +433,12 @@ class Counter(object):
 
 
 class iterable_test(dict):
-    def __init__(self, ignore_classes=six.string_types + (six.binary_type,)):
+    def __init__(self, ignore_classes=(str, bytes)):
         """ignore_classes must include str, because if a string
         is iterable, so is a single character, and the routine runs
         into an infinite recursion"""
         warnings.warn("Slated for removal", DeprecationWarning, stacklevel=2)
-        assert set(six.string_types) <= set(
-            ignore_classes
-        ), 'str must be in ignore_classes'
+        assert {str} <= set(ignore_classes), 'str must be in ignore_classes'
         self.ignore_classes = ignore_classes
 
     def __getitem__(self, candidate):
@@ -588,10 +575,7 @@ def remove_duplicates(iterable, key=None):
     'a a b b b'
     """
     return itertools.chain.from_iterable(
-        six.moves.map(
-            every_other,
-            six.moves.map(operator.itemgetter(1), itertools.groupby(iterable, key)),
-        )
+        map(every_other, map(operator.itemgetter(1), itertools.groupby(iterable, key)))
     )
 
 
@@ -801,7 +785,7 @@ def nwise(iter, n):
     while len(iterset) < n:
         iterset[-1:] = itertools.tee(iterset[-1])
         next(iterset[-1], None)
-    return six.moves.zip(*iterset)
+    return zip(*iterset)
 
 
 def window(iter, pre_size=1, post_size=1):
@@ -829,7 +813,7 @@ def window(iter, pre_size=1, post_size=1):
     post_iter = itertools.chain(post_iter, (None,) * post_size)
     post_iter = nwise(post_iter, post_size)
     next(post_iter, None)
-    return six.moves.zip(pre_iter, iter, post_iter)
+    return zip(pre_iter, iter, post_iter)
 
 
 class IterSaver(object):
@@ -917,7 +901,7 @@ def always_iterable(item):
     >>> next(always_iterable(dict(a=1)))
     {'a': 1}
     """
-    base_types = six.text_type, bytes, collections.abc.Mapping
+    base_types = str, bytes, collections.abc.Mapping
     return more_itertools.always_iterable(item, base_type=base_types)
 
 
