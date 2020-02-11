@@ -2,6 +2,7 @@ v6.0.0
 ======
 
 Remove ``Counter.GetCount``.
+Remove ``flatten`` and ``iflatten``.
 
 v5.0.0
 ======

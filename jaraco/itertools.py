@@ -424,52 +424,6 @@ class Counter:
         return result
 
 
-class iterable_test(dict):
-    # todo, factor out caching capability
-    def __init__(self, ignore_classes=(str, bytes)):
-        """ignore_classes must include str, because if a string
-        is iterable, so is a single character, and the routine runs
-        into an infinite recursion"""
-        warnings.warn("Slated for removal", DeprecationWarning, stacklevel=2)
-        assert {str} <= set(ignore_classes), 'str must be in ignore_classes'
-        self.ignore_classes = ignore_classes
-
-    def __getitem__(self, candidate):
-        return dict.get(self, type(candidate)) or self._test(candidate)
-
-    def _test(self, candidate):
-        try:
-            if isinstance(candidate, tuple(self.ignore_classes)):
-                raise TypeError
-            iter(candidate)
-            result = True
-        except TypeError:
-            result = False
-        self[type(candidate)] = result
-        return result
-
-
-def iflatten(subject, test=None):
-    if test is None:
-        test = iterable_test()
-    if not test[subject]:
-        yield subject
-    else:
-        for elem in subject:
-            for subelem in iflatten(elem, test):
-                yield subelem
-
-
-def flatten(subject, test=None):
-    """
-    *Deprecated*: Use more_itertools.collapse instead.
-    """
-    warnings.warn(
-        "Use more_itertools.collapse instead", DeprecationWarning, stacklevel=2
-    )
-    return list(more_itertools.collapse(subject, base_type=(bytes,)))
-
-
 def empty():
     """
     An empty iterator.
