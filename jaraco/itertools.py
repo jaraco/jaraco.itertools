@@ -405,6 +405,8 @@ class Counter(object):
     that pass through it.
 
     >>> items = Counter(range(20))
+    >>> items.count
+    0
     >>> values = list(items)
     >>> items.count
     20
@@ -412,17 +414,14 @@ class Counter(object):
 
     def __init__(self, i):
         self.count = 0
-        self._orig_iter = iter(i)
+        self.iter = zip(itertools.count(1), i)
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        result = next(self._orig_iter)
-        self.count += 1
+        self.count, result = next(self.iter)
         return result
-
-    next = __next__
 
     def GetCount(self):
         warnings.warn("Use count attribute directly", DeprecationWarning, stacklevel=2)
