@@ -1,3 +1,8 @@
+v6.0.0
+======
+
+Remove ``Counter.GetCount``.
+
 v5.0.0
 ======
 

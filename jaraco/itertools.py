@@ -423,15 +423,9 @@ class Counter:
         self.count, result = next(self.iter)
         return result
 
-    def GetCount(self):
-        warnings.warn("Use count attribute directly", DeprecationWarning, stacklevel=2)
-        return self.count
-
-
-# todo, factor out caching capability
-
 
 class iterable_test(dict):
+    # todo, factor out caching capability
     def __init__(self, ignore_classes=(str, bytes)):
         """ignore_classes must include str, because if a string
         is iterable, so is a single character, and the routine runs
