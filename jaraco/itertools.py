@@ -1,5 +1,3 @@
-# -*- coding: UTF-8 -*-
-
 """
 jaraco.itertools
 Tools for working with iterables.  Complements itertools and more_itertools.
@@ -171,8 +169,6 @@ class FetchingQueue(queue.Queue):
         while self.empty():
             self._fetcher()
         return self.get()
-
-    next = __next__
 
     def __iter__(self):
         while True:
@@ -490,8 +486,6 @@ class Reusable:
             self.reset()
             raise
 
-    next = __next__
-
 
 def every_other(iterable):
     """
@@ -595,8 +589,6 @@ class Peekable:
 
     def __next__(self):
         return next(self.iterator)
-
-    next = __next__
 
     def peek(self):
         result, self.iterator = peek(self.iterator)
@@ -773,8 +765,6 @@ class IterSaver:
         while len(self.buffer) <= self.n:
             self.buffer.append(next(self.iterable))
         return self.buffer.popleft()
-
-    next = __next__
 
 
 def partition_items(count, bin_size):
