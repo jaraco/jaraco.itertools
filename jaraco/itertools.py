@@ -765,7 +765,7 @@ def one(item):
     >>> next(numbers)
     2
     """
-    result, = item
+    (result,) = item
     return result
 
 
@@ -963,7 +963,7 @@ def maybe_single(sequence):
     'a'
     """
     try:
-        single, = sequence
+        (single,) = sequence
     except ValueError:
         return sequence
     return single
