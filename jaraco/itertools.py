@@ -69,7 +69,7 @@ def bisect(seq, func=bool):
     return queues.get_first_n_queues(2)
 
 
-class GroupbySaved(object):
+class GroupbySaved:
     """
     Split a sequence into n sequences where n is determined by the
     number of distinct values returned by a key function applied to each
@@ -185,7 +185,7 @@ class FetchingQueue(queue.Queue):
         self.put_nowait(item)
 
 
-class Count(object):
+class Count:
     """
     A stop object that will count how many times it's been called and return
     False on the N+1st call.  Useful for use with takewhile.
@@ -237,7 +237,7 @@ class Count(object):
         return vars(self) == vars(other)
 
 
-class islice(object):
+class islice:
     """May be applied to an iterable to limit the number of items returned.
     Works similarly to count, except is called only once on an iterable.
     Functionality is identical to islice, except for __str__ and reusability.
@@ -283,7 +283,7 @@ class islice(object):
         return result
 
 
-class LessThanNBlanks(object):
+class LessThanNBlanks:
     """
     An object that when called will return True until n false elements
     are encountered.
@@ -312,7 +312,7 @@ class LessThanNBlanks(object):
         return self.count < self.limit
 
 
-class LessThanNConsecutiveBlanks(object):
+class LessThanNConsecutiveBlanks:
     """
     An object that when called will return True until n consecutive
     false elements are encountered.
@@ -342,7 +342,7 @@ class LessThanNConsecutiveBlanks(object):
         return self.count < self.limit
 
 
-class splitter(object):
+class splitter:
     """
     object that will split a string with the given arguments for each call.
 
@@ -399,7 +399,7 @@ def infiniteCall(f, *args):
     return infinite_call(functools.partial(f, *args))
 
 
-class Counter(object):
+class Counter:
     """
     Wrap an iterable in an object that stores the count of items
     that pass through it.
@@ -500,7 +500,7 @@ def is_empty(iterable):
     return False
 
 
-class Reusable(object):
+class Reusable:
     """
     An iterator that may be reset and reused.
 
@@ -605,7 +605,7 @@ def peek(iterable):
     return next(peeker), original
 
 
-class Peekable(object):
+class Peekable:
     """
     Wrapper for a traditional iterable to give it a peek attribute.
 
@@ -815,7 +815,7 @@ def window(iter, pre_size=1, post_size=1):
     return zip(pre_iter, iter, post_iter)
 
 
-class IterSaver(object):
+class IterSaver:
     def __init__(self, n, iterable):
         self.n = n
         self.iterable = iterable
