@@ -1,7 +1,13 @@
 .. image:: https://img.shields.io/pypi/v/jaraco.itertools.svg
-   :target: https://pypi.org/project/jaraco.itertools
+   :target: `PyPI link`_
 
 .. image:: https://img.shields.io/pypi/pyversions/jaraco.itertools.svg
+   :target: `PyPI link`_
+
+.. _PyPI link: https://pypi.org/project/jaraco.itertools
+
+.. image:: https://dev.azure.com/jaraco/jaraco.itertools/_apis/build/status/jaraco.jaraco.itertools?branchName=master
+   :target: https://dev.azure.com/jaraco/jaraco.itertools/_build/latest?definitionId=1&branchName=master
 
 .. image:: https://img.shields.io/travis/jaraco/jaraco.itertools/master.svg
    :target: https://travis-ci.org/jaraco/jaraco.itertools
