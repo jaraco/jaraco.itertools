@@ -1151,7 +1151,10 @@ def partition_dict(items, key):
     """
 
     def unmatched(pair):
-        (test_key, item,) = pair
+        (
+            test_key,
+            item,
+        ) = pair
         return test_key != key
 
     items_iter = iter(items.items())
