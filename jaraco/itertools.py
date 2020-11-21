@@ -987,7 +987,9 @@ def assert_ordered(iterable, key=lambda x: x, comp=operator.le):
     )
     for pair in more_itertools.pairwise(iterable):
         keyed = tuple(map(key, pair))
-        assert comp(*keyed), err_tmpl.format(**locals())
+        # cannot use bare assert due to jaraco/jaraco.test#3
+        if not comp(*keyed):
+            raise AssertionError(err_tmpl.format(**locals()))
         yield pair[0]
     yield pair[1]
 
