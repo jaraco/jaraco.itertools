@@ -1,3 +1,8 @@
+v6.0.1
+======
+
+Switch to PEP 420 for namespace package.
+
 v6.0.0
 ======
 
