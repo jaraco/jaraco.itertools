@@ -1,3 +1,8 @@
+v6.0.3
+======
+
+#13: Fixed doc build errors.
+
 v6.0.2
 ======
 
