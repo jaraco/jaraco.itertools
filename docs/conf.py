@@ -31,3 +31,8 @@ link_files = {
 
 # Be strict about any broken references:
 nitpicky = True
+
+extensions += ['sphinx.ext.intersphinx']
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+}
