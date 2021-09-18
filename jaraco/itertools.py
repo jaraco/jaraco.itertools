@@ -1004,7 +1004,7 @@ def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
     - items in old are yielded first
     - items in new are yielded last
     - items that match are yielded in the order in which they
-    appear, giving preference to new
+      appear, giving preference to new
 
     Items match based on the 'key' parameter (identity by default).
 
