@@ -1,3 +1,8 @@
+v6.1.0
+======
+
+Add ``ensure_unique`` function.
+
 v6.0.3
 ======
 
