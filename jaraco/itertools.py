@@ -1168,7 +1168,7 @@ def ensure_unique(iterable, key=lambda x: x):
     Wrap an iterable to raise a ValueError if non-unique values are encountered.
 
     >>> list(ensure_unique('abc'))
-    ['a, 'b', 'c']
+    ['a', 'b', 'c']
     >>> consume(ensure_unique('abca'))
     Traceback (most recent call last):
     ...

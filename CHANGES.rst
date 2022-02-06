@@ -1,3 +1,8 @@
+v6.1.1
+======
+
+Fixed typo in ``ensure_unique`` doctest.
+
 v6.1.0
 ======
 
