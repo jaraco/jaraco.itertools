@@ -1,3 +1,8 @@
+v6.2.1
+======
+
+#15: Fixed broken test in ``ensure_unique``.
+
 v6.2.0
 ======
 
