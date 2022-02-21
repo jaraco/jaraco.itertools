@@ -1,3 +1,8 @@
+v6.2.0
+======
+
+Added ``accumulate`` function.
+
 v6.1.1
 ======
 

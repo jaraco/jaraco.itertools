@@ -1182,3 +1182,33 @@ def ensure_unique(iterable, key=lambda x: x):
             raise ValueError(f"Duplicate element {element!r} encountered.")
         seen_add(k)
         yield element
+
+
+def accumulate(increments):
+    """
+    Accumulate values in the iterable into a new iterable
+    of the same length.
+
+    >>> list(accumulate([1, 2, 3]))
+    [1, 3, 6]
+    >>> list(accumulate([0.5, -1, 20]))
+    [0.5, -0.5, 19.5]
+    >>> list(accumulate([]))
+    []
+    >>> list(accumulate([42]))
+    [42]
+
+    Accepts any objects that are summable.
+
+    >>> list(accumulate('abcde'))
+    ['a', 'ab', 'abc', 'abcd', 'abcde']
+    """
+    items_ = iter(increments)
+    try:
+        value = next(items_)
+    except StopIteration:
+        return
+    yield value
+    for item in items_:
+        value += item
+        yield value
