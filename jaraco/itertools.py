@@ -12,6 +12,7 @@ import functools
 import heapq
 import collections.abc
 import queue
+from typing import Iterable, Any
 
 import inflect
 import more_itertools
@@ -1213,3 +1214,29 @@ def accumulate(increments):
     for item in items_:
         value += item
         yield value
+
+
+def find_subseq(seq: Iterable[Any], cand: Iterable[Any]):
+    """Find cand in seq.
+
+    Args:
+        seq: iterable of items to be searched
+        cand: iterable of items that must match
+
+    Returns:
+        The index where cand can be found in seq or None.
+
+    >>> find_subseq([-1, 0, 1, 2], [1, 2])
+    2
+    >>> find_subseq([-1, 0, 1, 2], [0, 2])
+    >>> find_subseq([-1, 0, 1, 2], [2, 1])
+    >>> find_subseq([-1, 0, 1, 2], [])
+    Traceback (most recent call last):
+    ValueError
+    """
+    cand = tuple(cand)
+
+    def check(*window):
+        return window == cand
+    match_indexes = more_itertools.locate(seq, check, window_size=len(cand))
+    return next(match_indexes, None)
