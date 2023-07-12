@@ -1,3 +1,13 @@
+v6.4.0
+======
+
+Features
+--------
+
+- Added ``summarize``.
+- Require Python 3.8 or later.
+
+
 v6.3.0
 ======
 
