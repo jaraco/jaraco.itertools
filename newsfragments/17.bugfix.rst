@@ -1,0 +1,1 @@
+Remove use of ``OrderedDict`` in ``partition_dict``.

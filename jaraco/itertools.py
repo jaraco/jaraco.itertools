@@ -1128,18 +1128,18 @@ def _swap_on_miss(partition_result):
 
 def partition_dict(items, key):
     """
-    Given an ordered dictionary of items and a key in that dict,
-    return an ordered dict of items before, the keyed item, and
-    an ordered dict of items after.
+    Given a dictionary of items and a key in that dict,
+    return another dict of items before, the keyed item, and
+    the dict of items after.
 
-    >>> od = collections.OrderedDict(zip(range(5), 'abcde'))
+    >>> od = dict(zip(range(5), 'abcde'))
     >>> before, item, after = partition_dict(od, 3)
     >>> before
-    OrderedDict([(0, 'a'), (1, 'b'), (2, 'c')])
+    {0: 'a', 1: 'b', 2: 'c'}
     >>> item
     'd'
     >>> after
-    OrderedDict([(4, 'e')])
+    {4: 'e'}
 
     Like string.partition, if the key is not found in the items,
     the before will contain all items, item will be None, and
@@ -1147,10 +1147,10 @@ def partition_dict(items, key):
 
     >>> before, item, after = partition_dict(od, -1)
     >>> before
-    OrderedDict([(0, 'a'), ..., (4, 'e')])
+    {0: 'a', ..., 4: 'e'}
     >>> item
-    >>> list(after)
-    []
+    >>> after
+    {}
     """
 
     def unmatched(pair):
@@ -1159,8 +1159,8 @@ def partition_dict(items, key):
 
     items_iter = iter(items.items())
     item = items.get(key)
-    left = collections.OrderedDict(itertools.takewhile(unmatched, items_iter))
-    right = collections.OrderedDict(items_iter)
+    left = dict(itertools.takewhile(unmatched, items_iter))
+    right = dict(items_iter)
     return left, item, right
 
 
