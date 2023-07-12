@@ -1232,7 +1232,8 @@ def find_subseq(seq: Iterable[Any], cand: Iterable[Any]):
     >>> find_subseq([-1, 0, 1, 2], [2, 1])
     >>> find_subseq([-1, 0, 1, 2], [])
     Traceback (most recent call last):
-    ValueError
+    ...
+    ValueError: window size must be at least 1
     """
     cand = tuple(cand)
 
