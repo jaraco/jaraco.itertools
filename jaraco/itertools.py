@@ -1242,3 +1242,17 @@ def find_subseq(seq: Iterable[Any], cand: Iterable[Any]):
 
     match_indexes = more_itertools.locate(seq, check, window_size=len(cand))
     return next(match_indexes, None)
+
+
+def summarize(items: Iterable, **bin_checks):
+    """
+    >>> is_str = lambda item: isinstance(item, str)
+    >>> is_int = lambda item: isinstance(item, int)
+    >>> summarize(['a', 'b', 20], strings=is_str, ints=is_int)
+    {'strings': 2, 'ints': 1}
+    """
+    counters = {name: itertools.count() for name in bin_checks}
+    for item, check in itertools.product(items, bin_checks):
+        if bin_checks[check](item):
+            next(counters[check])
+    return {name: next(counter) for name, counter in counters.items()}
