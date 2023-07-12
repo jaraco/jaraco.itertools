@@ -1238,5 +1238,6 @@ def find_subseq(seq: Iterable[Any], cand: Iterable[Any]):
 
     def check(*window):
         return window == cand
+
     match_indexes = more_itertools.locate(seq, check, window_size=len(cand))
     return next(match_indexes, None)
