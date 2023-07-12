@@ -1,3 +1,12 @@
+v6.4.1
+======
+
+Bugfixes
+--------
+
+- Remove use of ``OrderedDict`` in ``partition_dict``. (#17)
+
+
 v6.4.0
 ======
 
