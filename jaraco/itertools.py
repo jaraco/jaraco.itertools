@@ -3,16 +3,17 @@ jaraco.itertools
 Tools for working with iterables.  Complements itertools and more_itertools.
 """
 
-import operator
-import itertools
 import collections
-import math
-import warnings
+import collections.abc
 import functools
 import heapq
-import collections.abc
+import itertools
+import math
+import operator
 import queue
-from typing import Iterable, Any
+import warnings
+from collections.abc import Iterable
+from typing import Any
 
 import inflect
 import more_itertools
