@@ -353,12 +353,14 @@ class splitter:
         self.sep = sep
 
     def __call__(self, s):
+        if self.sep == '':
+            raise ValueError('empty separator')
         lastIndex = 0
         while True:
             nextIndex = s.find(self.sep, lastIndex)
             if nextIndex != -1:
                 yield s[lastIndex:nextIndex]
-                lastIndex = nextIndex + 1
+                lastIndex = nextIndex + len(self.sep)
             else:
                 yield s[lastIndex:]
                 break
