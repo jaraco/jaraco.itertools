@@ -1059,9 +1059,9 @@ def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
     The merge should not suppress non-True items:
 
     >>> consume(collate_revs([0, 1, 2, None, ''], [0, None, ''], merge=print))
+    0 0
     None None
     <BLANKLINE>
-    0 0
 
     """
     missing = object()
@@ -1086,7 +1086,7 @@ def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
             continue
 
         # yield all new items that appear before the matching key
-        before, match_new, new_items = _swap_on_miss(partition_dict(new_items, old_key))
+        before, match_new, new_items = partition_dict(new_items, old_key)
         for new_key, new_item in before.items():
             # ensure any new keys are merged with previous items if
             # they exist
