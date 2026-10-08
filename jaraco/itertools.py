@@ -987,13 +987,20 @@ def assert_ordered(iterable, key=lambda x: x, comp=operator.le):
         if comp is operator.ge
         else "not {comp} {pair}"
     )
-    for pair in more_itertools.pairwise(iterable):
+    items = iter(iterable)
+    try:
+        previous = next(items)
+    except StopIteration:
+        return
+    for current in items:
+        pair = previous, current
         keyed = tuple(map(key, pair))
         # cannot use bare assert due to jaraco/jaraco.test#3
         if not comp(*keyed):
             raise AssertionError(err_tmpl.format(**locals()))
-        yield pair[0]
-    yield pair[1]
+        yield previous
+        previous = current
+    yield previous
 
 
 def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
