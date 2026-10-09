@@ -1090,7 +1090,7 @@ def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
         for new_key, new_item in before.items():
             # ensure any new keys are merged with previous items if
             # they exist
-            yield maybe_merge(new_item, old_items.pop(new_key, missing))
+            yield maybe_merge(old_items.pop(new_key, missing), new_item)
         yield merge(old_item, match_new)
 
     # finally, yield whatever is leftover
