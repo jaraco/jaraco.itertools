@@ -584,6 +584,8 @@ class Peekable:
             return object.__new__(cls)
 
     def __init__(self, iterator):
+        if iterator is self:
+            return
         self.iterator = iter(iterator)
 
     def __iter__(self):
