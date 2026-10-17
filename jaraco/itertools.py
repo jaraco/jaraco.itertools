@@ -246,6 +246,9 @@ class islice:
     >>> tuple(islice(None).apply(range(20)))
     (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
 
+    >>> print(islice(5))
+    at most 5
+
     >>> print(islice(3, 10))
     items 3 to 9
 
@@ -425,6 +428,9 @@ class Counter:
 def empty():
     """
     An empty iterator.
+
+    >>> list(empty())
+    []
     """
     return iter(tuple())
 
