@@ -227,7 +227,7 @@ class Count:
 
     def __str__(self):
         if self.limit:
-            return 'at most %d' % self.limit
+            return f'at most {self.limit}'
         else:
             return 'all'
 
@@ -271,16 +271,16 @@ class islice:
 
     def _formatArgs(self):
         def slice_range(a_b):
-            return '%d to %d' % (a_b[0], a_b[1] - 1)
+            return f'{a_b[0]} to {a_b[1] - 1}'
 
         if len(self.sliceArgs) == 1:
-            result = 'at most %d' % self.sliceArgs
+            result = f'at most {self.sliceArgs[0]}'
         if len(self.sliceArgs) == 2:
-            result = 'items %s' % slice_range(self.sliceArgs)
+            result = f'items {slice_range(self.sliceArgs)}'
         if len(self.sliceArgs) == 3:
             ord = inflect.engine().ordinal(self.sliceArgs[2])
             range = slice_range(self.sliceArgs[0:2])
-            result = 'every %(ord)s item from %(range)s' % locals()
+            result = f'every {ord} item from {range}'
         return result
 
 
@@ -432,7 +432,7 @@ def empty():
     >>> list(empty())
     []
     """
-    return iter(tuple())
+    return iter(())
 
 
 def is_empty(iterable):
@@ -792,7 +792,7 @@ def partition_items(count, bin_size):
     >>> partition_items(10, 3)
     [3, 3, 2, 2]
     """
-    num_bins = int(math.ceil(count / float(bin_size)))
+    num_bins = math.ceil(count / float(bin_size))
     bins = [0] * num_bins
     for i in range(count):
         bins[i % num_bins] += 1
@@ -1100,9 +1100,7 @@ def collate_revs(old, new, key=lambda x: x, merge=lambda old, new: new):
         yield merge(old_item, match_new)
 
     # finally, yield whatever is leftover
-    # yield from new_items.values()
-    for item in new_items.values():
-        yield item
+    yield from new_items.values()
 
 
 def _mutable_iter(dict):
@@ -1161,7 +1159,7 @@ def partition_dict(items, key):
     """
 
     def unmatched(pair):
-        test_key, item = pair
+        test_key, _item = pair
         return test_key != key
 
     items_iter = iter(items.items())

@@ -28,7 +28,7 @@ link_files = {
             ),
             dict(
                 pattern=r"more_itertools (?P<more_itertools_ver>[0-9.]+)",
-                url="https://more-itertools.readthedocs.io/en/latest/versions.html",  # noqa: E501
+                url="https://more-itertools.readthedocs.io/en/latest/versions.html",
             ),
         ],
     )
