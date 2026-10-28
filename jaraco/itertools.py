@@ -1217,7 +1217,7 @@ def accumulate(increments):
         return
     yield value
     for item in items_:
-        value += item
+        value = value + item
         yield value
 
 
