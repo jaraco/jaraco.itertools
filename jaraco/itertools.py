@@ -58,15 +58,16 @@ def bisect(seq, func=bool):
     >>> list(even)
     [0, 2, 4]
 
-    >>> other, zeros = bisect(reversed(range(5)))
+    >>> zeros, other = bisect(reversed(range(5)))
     >>> list(zeros)
     [0]
     >>> list(other)
     [4, 3, 2, 1]
 
     """
-    queues = GroupbySaved(seq, func)
-    return queues.get_first_n_queues(2)
+    queues = GroupbySaved(seq, lambda item: bool(func(item)))
+    queues.get_first_n_queues(2)
+    return [queues.queues.get(value, iter(())) for value in (False, True)]
 
 
 class GroupbySaved:
