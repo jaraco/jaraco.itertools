@@ -809,7 +809,7 @@ def balanced_rows(n, iterable, fillvalue=None):
     for allocation in partition_items(count, n):
         row = itertools.islice(iterable, allocation)
         if allocation < n:
-            row = itertools.chain(row, [fillvalue])
+            row = itertools.chain(row, itertools.repeat(fillvalue, n - allocation))
         yield tuple(row)
 
 
