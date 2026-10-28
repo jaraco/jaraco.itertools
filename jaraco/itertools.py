@@ -755,10 +755,10 @@ def window(iter, pre_size=1, post_size=1):
     """
     pre_iter, iter = itertools.tee(iter)
     pre_iter = itertools.chain((None,) * pre_size, pre_iter)
-    pre_iter = nwise(pre_iter, pre_size)
+    pre_iter = nwise(pre_iter, pre_size) if pre_size else itertools.repeat(())
     post_iter, iter = itertools.tee(iter)
     post_iter = itertools.chain(post_iter, (None,) * post_size)
-    post_iter = nwise(post_iter, post_size)
+    post_iter = nwise(post_iter, post_size) if post_size else itertools.repeat(())
     next(post_iter, None)
     return zip(pre_iter, iter, post_iter)
 
